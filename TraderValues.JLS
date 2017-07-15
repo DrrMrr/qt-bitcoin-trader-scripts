@@ -1,7 +1,0 @@
-[JLScript]
-Data="var variablePath = \"/home/odroid/Desktop/QTBitcointTrader/\";\n///////////////////////////////////////////////////////////////////\n\nvar bidPriceFile = variablePath + \"bidPrice.txt\";\nvar bidPrice = trader.get(\"BidPrice\");\ntrader.fileWrite(bidPriceFile,bidPrice);\n///////////////////////////////////////////////////////////////////"
-Encrypted=false
-LogRowsCount=50
-Name=TraderValues
-Notes=
-Version=1
