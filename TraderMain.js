@@ -20,24 +20,24 @@ var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit Ho
 var martinFile = variablePath + "Martin.txt";
 var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////
-
+//lastSale.txt
 var lastSaleFile = variablePath + "lastSale.txt";
 trader.fileWrite(lastSaleFile,0);
 var lastSale = parseFloat(trader.fileReadAll(lastSaleFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////
-
+//lastETHbalance.txt
 var lastETHbalanceFile = variablePath + "lastETHbalance.txt";
 trader.fileWrite(lastETHbalanceFile,0);
 var lastETHbalance = parseFloat(trader.fileReadAll(lastETHbalanceFile));
 ///////////////////////////////////////////////////////////////////
-
+//bidPrice.txt
 var bidPriceFile = variablePath + "bidPrice.txt";
 var bidPrice = trader.get("BidPrice");
 trader.fileWrite(bidPriceFile,bidPrice);
 ///////////////////////////////////////////////////////////////////
 
-var perekrDif = 0.25;
-var martinDif = 0.1;
+//var perekrDif = 0.25;
+//var martinDif = 0.1;
 
 var numberOfBids = 0;
 var numberOfAsks = trader.get("OpenAsksCount");
@@ -48,7 +48,6 @@ trader.fileWrite(lastSaleFile,lastSale);
 
 trader.groupStop("TraderValues");
 trader.groupStart("TraderValues");
-
 trader.groupStop("Trader");
 trader.groupStart("Trader");
 
