@@ -21,17 +21,17 @@ var martinFile = variablePath + "Martin.txt";
 var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////
 //lastSale.txt
-var lastSaleFile = variablePath + "lastSale.txt";
+var lastSaleFile = variablePath + "_logLastSale.txt";
 trader.fileWrite(lastSaleFile,0);
 var lastSale = parseFloat(trader.fileReadAll(lastSaleFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////
 //lastETHbalance.txt
-var lastETHbalanceFile = variablePath + "lastETHbalance.txt";
+var lastETHbalanceFile = variablePath + "_logLastETHbalance.txt";
 trader.fileWrite(lastETHbalanceFile,0);
 var lastETHbalance = parseFloat(trader.fileReadAll(lastETHbalanceFile));
 ///////////////////////////////////////////////////////////////////
-//bidPrice.txt
-var bidPriceFile = variablePath + "bidPrice.txt";
+//logBidPrice.txt
+var bidPriceFile = variablePath + "_logBidPrice.txt";
 var bidPrice = trader.get("BidPrice");
 trader.fileWrite(bidPriceFile,bidPrice);
 ///////////////////////////////////////////////////////////////////
