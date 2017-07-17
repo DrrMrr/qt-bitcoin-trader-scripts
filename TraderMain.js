@@ -1,23 +1,23 @@
-var variablePath = "/home/damien/Desktop/QTBitcointTrader/Variables/";
+var variablePath = "/home/damien/Desktop/QTBitcoinTrader/Variables/";
 ///////////////////////////////////////////////////////////////////
 // in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
-var otstupFile = variablePath + "FirstBuy.txt";
+var otstupFile = variablePath + "firstBuy.txt";
 var otstup = parseFloat(trader.fileReadAll(otstupFile));
 ///////////////////////////////////////////////////////////////////
 //NumberOfOrders.txt
-var ordersFile = variablePath + "NumberOfOrders.txt";
+var ordersFile = variablePath + "numberOfOrders.txt";
 var orders = parseFloat(trader.fileReadAll(ordersFile)); // 2 to 20,how many buy-to place orders in the amount of overlap. //default 13
 ///////////////////////////////////////////////////////////////////
 //StepBetweenOrders.txt
-var perekrFile = variablePath + "StepBetweenOrders.txt";
+var perekrFile = variablePath + "stepBetweenOrders.txt";
 var perekr = parseFloat(trader.fileReadAll(perekrFile)); // in% overlap stroke rates,calculating the depth of the table buy orders.  For example,in a first step,the price 10ETH percentage of overlap of 20% means that the table will be set in the range // 8-10ETH.  //default 30
 ///////////////////////////////////////////////////////////////////
 //Profit.txt
-var profitFile = variablePath + "Profit.txt";
+var profitFile = variablePath + "profit.txt";
 var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit How to lay into each sell order. 
 ///////////////////////////////////////////////////////////////////
 //Margin.txt
-var martinFile = variablePath + "Martin.txt";
+var martinFile = variablePath + "martin.txt";
 var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////
 //lastSale.txt
