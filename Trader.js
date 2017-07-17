@@ -1,4 +1,4 @@
-	var variablePath = "/home/damien/Desktop/QTBitcointTrader/Variables/";
+	var variablePath = "/home/damien/Desktop/QTBitcoinTrader/Variables/";
 	////////// SCRIPT 2 /////////////////////////////////////////////
 	var vverh = 0.7; // in%, for example, if there is 2%, and at the time running a script purchase price will be 100 BTC, then the purchase price 102 restarts the entire cycle //default 0.4
 	//var orderss = 8; // value in the script 1 
