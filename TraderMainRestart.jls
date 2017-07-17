@@ -1,7 +1,0 @@
-[JLScript]
-Data="trader.groupStop(\"TraderMain\");\ntrader.groupStart(\"TraderMain\");"
-Encrypted=false
-LogRowsCount=50
-Name=TraderMainRestart
-Notes=
-Version=1
