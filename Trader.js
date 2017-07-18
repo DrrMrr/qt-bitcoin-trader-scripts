@@ -108,7 +108,7 @@
 		script1();
 		sledcikl();
 		trader.timer(23, "rrr()");
-		trader.timer(90, "checkIfFirstBuyWasExecuted()");		
+		//trader.timer(90, "checkIfFirstBuyWasExecuted()");		
 		trader.log("VAL[END: script2()]: ");
 		//////////////////////////////
 		fileLogger = "script2().stop";
