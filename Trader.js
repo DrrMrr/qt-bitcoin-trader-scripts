@@ -13,6 +13,7 @@
 	// in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
 	var otstupFile = variablePath + "firstBuy.txt";
 	var otstup = parseFloat(trader.fileReadAll(otstupFile));
+	var otstupOriginal = otstup;
 	///////////////////////////////////////////////////////////////////
 	//NumberOfOrders.txt
 	var ordersFile = variablePath + "numberOfOrders.txt";
@@ -204,8 +205,8 @@
 		var openBids = trader.get("OpenBidsCount");
 		trader.log("VAL[checkIfFirstBuyWasExecuted().ordersOriginalValue]: ",ordersOriginalValue);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().openBids]: ",openBids);
-		trader.log("VAL[checkIfFirstBuyWasExecuted().otstup]: ",otstup);
-		if(ordersOriginalValue == openBids && otstup == 0)
+		trader.log("VAL[checkIfFirstBuyWasExecuted().otstupOriginal]: ",otstupOriginal);
+		if(ordersOriginalValue <= openBids && otstupOriginal == 0)
 		{
 			trader.groupStop("TraderMainRestart");
 			trader.groupStart("TraderMainRestart");
