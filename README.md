@@ -17,3 +17,14 @@ Contributions are also welcome on my BTC address 1AgxFdBGFVvJRmLk6JYBJozuR3UZ7Nu
 Best regards
 
 Damien
+
+
+# How it works
+
+
+The idea of these scripts is, to make more bids, where first bids are with lower volume and when the price falls, the volume increases.
+
+Old bids are cleared when one of next conditions are fulfilled:
+
+sell has been executed when resetPrice condition in percentage is reached after every sell or restart of script Trader, min value is checked and then if the current price is bigger for more than resetPrice in percentage, everything restarts
+
