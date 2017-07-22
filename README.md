@@ -116,6 +116,10 @@ _resetPrice.txt_
 
 this value is in percentage and it defines, if price goes up, when all the bids cleared and generated like at first run.
 
+_resetBidsEnabled.txt_
+
+if this variabled is set to true, then all bids will be reset and new bids will be generated, when condition in resetPrice.txt will be reached.
+
 
 _StepBetweenOrders.txt_
 
