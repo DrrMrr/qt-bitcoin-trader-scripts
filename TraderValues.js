@@ -1,5 +1,6 @@
-var variablePath = "/home/damien/Desktop/QTBitcoinTrader/Variables/";
+var variablePath = "/home/damien/Desktop/QTBitcointTrader/";
 ///////////////////////////////////////////////////////////////////
+
 var bidPriceFile = variablePath + "bidPrice.txt";
 var bidPrice = trader.get("BidPrice");
 trader.fileWrite(bidPriceFile,bidPrice);
