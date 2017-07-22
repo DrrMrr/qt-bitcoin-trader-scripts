@@ -214,7 +214,7 @@
 		trader.log("VAL[checkIfFirstBuyWasExecuted().ordersOriginalValue]: ",ordersOriginalValue);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().openBids]: ",openBids);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().otstupOriginal]: ",otstupOriginal);
-		if((ordersOriginalValue == openBids && otstupOriginal == 0) || openBids == 0)
+		if((ordersOriginalValue == openBids || openBids == 0) && otstupOriginal == 0)
 		{
 			trader.groupStop("TraderMainRestart");
 			trader.groupStart("TraderMainRestart");
@@ -344,7 +344,7 @@
 		trader.log("VAL[raznost]: ", raznost);
 		amstart = 0;
 		trader.delay(13, "koa()");
-		trader.timer(8, "hbvr()");
+		trader.timer(5, "hbvr()");
 		pperv = 0;
 		ppervraz = 0;
 		pvtorvraz = 0;
