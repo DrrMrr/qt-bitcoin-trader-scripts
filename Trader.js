@@ -273,7 +273,7 @@
 
 		//reset bids in resetPrice condition is reached
 		//  && resetBidsCondition == true
-		if (bidPrice >= rest && resetBidsCondition = "true") {
+		if (bidPrice >= rest && resetBidsCondition == "true") {
 
 			trader.log("VAL[rrr().get(OpenAsksCount)]: ", trader.get("OpenAsksCount"));
 
