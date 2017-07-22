@@ -38,25 +38,27 @@
 	var profitInDollarsFile = variablePath + "profitInDollars.txt";
 	var profitInDollars = parseFloat(trader.fileReadAll(profitInDollarsFile));
 	///////////////////////////////////////////////////////////////////
-	var feeTakerFile = variablePath + "feeTaker.txt";
-	var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
-	///////////////////////////////////////////////////////////////////
-	var feeMakerFile = variablePath + "feeMaker.txt";
-	var feeMaker = parseFloat(trader.fileReadAll(feeMakerFile));
-	///////////////////////////////////////////////////////////////////
 	var profitInPercentageFile = variablePath + "profitInPercentage.txt";
 	var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 	///////////////////////////////////////////////////////////////////
 	var profitInDollarsFileConditioan = variablePath + "profitInDollarsCondition.txt";
 	var profitInDollarsConditioan = parseFloat(trader.fileReadAll(profitInDollarsFileConditioan));
 	///////////////////////////////////////////////////////////////////
-
+	var feeTakerFile = variablePath + "feeTaker.txt";
+	var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
+	///////////////////////////////////////////////////////////////////
+	var feeMakerFile = variablePath + "feeMaker.txt";
+	var feeMaker = parseFloat(trader.fileReadAll(feeMakerFile));
+	///////////////////////////////////////////////////////////////////	
 	var bidPriceFile = variablePath + "bidPrice.txt";
 	var bidPrice = trader.get("BidPrice");
 	trader.fileWrite(bidPriceFile,bidPrice);
 	///////////////////////////////////////////////////////////////////
 	var resetPriceFile = variablePath + "resetPrice.txt";
 	var resetPrice = parseFloat(trader.fileReadAll(resetPriceFile));
+	///////////////////////////////////////////////////////////////////
+	var resetBidsConditionFile = variablePath + "resetBidsCondition.txt";
+	var resetBidsCondition = parseFloat(trader.fileReadAll(resetBidsConditionFile));
 	///////////////////////////////////////////////////////////////////
 	var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
 	///////////////////////////////////////////////////////////////////
@@ -266,8 +268,8 @@
 		trader.log("VAL[rrr().rest]: ", rest);
 
 
-		//MILJENO JE, DA SE SICER RESETIRAJO PONUDBE, KO CENA PORASTE
-		if (bidPrice >= rest) {
+		//reset bids in resetPrice condition is reached
+		if (bidPrice >= rest && resetBidsCondition == true) {
 
 			trader.log("VAL[rrr().get(OpenAsksCount)]: ", trader.get("OpenAsksCount"));
 
