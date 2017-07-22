@@ -38,6 +38,12 @@
 	var profitInDollarsFile = variablePath + "profitInDollars.txt";
 	var profitInDollars = parseFloat(trader.fileReadAll(profitInDollarsFile));
 	///////////////////////////////////////////////////////////////////
+	var feeTakerFile = variablePath + "feeTaker.txt";
+	var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
+	///////////////////////////////////////////////////////////////////
+	var feeMakerFile = variablePath + "feeMaker.txt";
+	var feeMaker = parseFloat(trader.fileReadAll(feeMakerFile));
+	///////////////////////////////////////////////////////////////////
 	var profitInPercentageFile = variablePath + "profitInPercentage.txt";
 	var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 	///////////////////////////////////////////////////////////////////
@@ -498,9 +504,7 @@
 			trader.log("VAL[END: venakid().profitInPercentage]: ",profitInPercentage);
 			trader.log("VAL[END: venakid().((trader.get(LastPrice)/100)*profit)+ profitInDollars]: ",((trader.get("LastPrice")*profit)+ profitInDollars));
 		}
-		var feeMaker = 0.1;
-		var feeTaker = 0.1;
-		
+				
 		var lastBuyPrice = trader.get("LastMyBuyPrice");
 		var buyFee = lastBuyPrice / 1000 * (feeTaker * 10);
 		var absValue = Math.abs(lastBuyPrice - trader.get("LastPrice"));
