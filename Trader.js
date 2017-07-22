@@ -1,38 +1,38 @@
-	var variablePath = "/home/damien/Desktop/QTBitcoinTrader/Variables/";
+	var variablePath = "/home/damien/Desktop/QTBitcointTrader/";
 	////////// SCRIPT 2 /////////////////////////////////////////////
 	var vverh = 0.7; // in%, for example, if there is 2%, and at the time running a script purchase price will be 100 BTC, then the purchase price 102 restarts the entire cycle //default 0.4
 	//var orderss = 8; // value in the script 1 
 	// Below if you do not Charite do not change anything. 
 	var rest = 100000000000;
-	var filePath = variablePath + "_logLastBTCbalance.txt";
+	var filePath = variablePath + "qtLastBTCbalance.log";
 
 	/////////////////////////////////////////////////////////////////
 	////////// SCRIPT 1 /////////////////////////////////////////////
 
 	///////////////////////////////////////////////////////////////////
 	// in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
-	var otstupFile = variablePath + "firstBuy.txt";
+	var otstupFile = variablePath + "FirstBuy.txt";
 	var otstup = parseFloat(trader.fileReadAll(otstupFile));
 	var otstupOriginal = otstup;
 	///////////////////////////////////////////////////////////////////
 	//NumberOfOrders.txt
-	var ordersFile = variablePath + "numberOfOrders.txt";
+	var ordersFile = variablePath + "NumberOfOrders.txt";
 	var orders = parseFloat(trader.fileReadAll(ordersFile)); // 2 to 20,how many buy-to place orders in the amount of overlap. //default 13
 	var ordersOriginalValue = orders;
 	///////////////////////////////////////////////////////////////////
 	//StepBetweenOrders.txt
-	var perekrFile = variablePath + "stepBetweenOrders.txt";
+	var perekrFile = variablePath + "StepBetweenOrders.txt";
 	var perekr = parseFloat(trader.fileReadAll(perekrFile)); // in% overlap stroke rates,calculating the depth of the table buy orders.  For example,in a first step,the price 10BTC percentage of overlap of 20% means that the table will be set in the range // 8-10BTC.  //default 30
 	///////////////////////////////////////////////////////////////////
 	//Profit.txt
-	var profitFile = variablePath + "profit.txt";
+	var profitFile = variablePath + "Profit.txt";
 	var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit How to lay into each sell order. 
 	///////////////////////////////////////////////////////////////////
 	//Margin.txt
-	var martinFile = variablePath + "martin.txt";
+	var martinFile = variablePath + "Martin.txt";
 	var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 	///////////////////////////////////////////////////////////////////
-	var lastETHbalanceFile = variablePath + "_logLastETHbalance.txt";
+	var lastETHbalanceFile = variablePath + "lastETHbalance.txt";
 	var lastETHbalance = 0;
 	///////////////////////////////////////////////////////////////////
 	var profitInDollarsFile = variablePath + "profitInDollars.txt";
@@ -45,14 +45,14 @@
 	var profitInDollarsConditioan = parseFloat(trader.fileReadAll(profitInDollarsFileConditioan));
 	///////////////////////////////////////////////////////////////////
 
-	var bidPriceFile = variablePath + "_logBidPrice.txt";
+	var bidPriceFile = variablePath + "bidPrice.txt";
 	var bidPrice = trader.get("BidPrice");
 	trader.fileWrite(bidPriceFile,bidPrice);
 	///////////////////////////////////////////////////////////////////
 	var resetPriceFile = variablePath + "resetPrice.txt";
 	var resetPrice = parseFloat(trader.fileReadAll(resetPriceFile));
 	///////////////////////////////////////////////////////////////////
-	var fileLoggerFile = variablePath + "_logfileLoggerTrader.txt";
+	var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
 	///////////////////////////////////////////////////////////////////
 
 
@@ -107,7 +107,7 @@
 		trader.log("VAL[START: script2()]: ");
 		script1();
 		sledcikl();
-		trader.timer(23, "rrr()");
+		trader.timer(30, "rrr()");
 		//trader.timer(90, "checkIfFirstBuyWasExecuted()");		
 		trader.log("VAL[END: script2()]: ");
 		//////////////////////////////
@@ -206,7 +206,7 @@
 		trader.log("VAL[checkIfFirstBuyWasExecuted().ordersOriginalValue]: ",ordersOriginalValue);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().openBids]: ",openBids);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().otstupOriginal]: ",otstupOriginal);
-		if(ordersOriginalValue == openBids && otstupOriginal == 0)
+		if(openBids == 0 && otstupOriginal == 0)
 		{
 			trader.groupStop("TraderMainRestart");
 			trader.groupStart("TraderMainRestart");
