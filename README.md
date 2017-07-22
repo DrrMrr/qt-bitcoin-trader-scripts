@@ -57,67 +57,67 @@ Set Variables path in script Trader and TraderMain to your path where all Variab
 
 **Setting the variables**
 
-feeMaker.txt
+_feeMaker.txt_
 
 
 Maker fees are paid when you add liquidity to our order book by placing a limit order under the ticker price for buy and above the ticker price for sell (source bitfinex.com).
 
 
-feeTaker.txt
+_feeTaker.txt_
 
 
 Taker fees are paid when you remove liquidity from our order book by placing any order that is executed against an order of the order book (source bitfinex.com).
 
 
-firstBuy.txt
+_FirstBuy.txt_
 
 
 when the first bid will take place. If you are testing the script, then set the value to bigger than 5. If the value is set to 0, then the first bid will be the same as the current price and order will be executed.
 
 
-martin.txt
+_Martin.txt_
 
 
 this value sets how much apart are the bids.
 
 
-numberOfOrders.txt
+_NumberOfOrders.txt_
 
 
 set maximum number of bid orders
 
 
-profit.txt
+_Profit.txt_
 
 
 how to lay into each sell order.
 
 
-profitInDollars.txt
+_profitInDollars.txt_
 
 
 set profit for each ask price (sell price) in dollars.
 
 
-profitInDollarsCondition.txt
+_profitInDollarsCondition.txt_
 
 
 if it's set to true, then profit for each selling price(ask) will be calculated from value found in profitInDollarsCondition.txt, otherwise what is defined in profitInPercentage.txt. Best to leave it to false and set profit in percentage.
 
 
-profitInPercentage.txt
+_profitInPercentage.txt_
 
 
 set profit for each ask price (sell price) in percentage. This value set's how much profit would you like to make with each buy and sell.
 
 
-resetPrice.txt
+_resetPrice.txt_
 
 
 this value is in percentage and it defines, if price goes up, when all the bids cleared and generated like at first run.
 
 
-stepBetweenOrders.txt
+_StepBetweenOrders.txt_
 
 
 overlap stroke rates, calculating the depth of the table buy orders.  For example, in a first step, the price 10BTC percentage of overlap of 20% means that the table will be set in the range // 8-10BTC.
@@ -128,11 +128,11 @@ overlap stroke rates, calculating the depth of the table buy orders.  For exampl
 At start, log files will be created:
 
 
-_logBidPrice.txt
-_logfileLoggerTrader.txt
-_logLastSale.txt
-_logLastBTCbalance.txt
-_logLastETHbalance.txt
+* bidPrice.txt
+* fileLoggerTrader.txt
+* lastSale.txt
+* qtLastBTCbalance.log
+* lastETHbalance.txt
 
 
 Log files can be deleted before start or when all scripts are stopped.
@@ -140,4 +140,3 @@ Log files can be deleted before start or when all scripts are stopped.
 **Starting the scripts**
 
 Start the script named "TraderMainRestart". This script stops and runs everything.
-
