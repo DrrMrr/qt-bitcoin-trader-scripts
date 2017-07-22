@@ -214,7 +214,7 @@
 		trader.log("VAL[checkIfFirstBuyWasExecuted().ordersOriginalValue]: ",ordersOriginalValue);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().openBids]: ",openBids);
 		trader.log("VAL[checkIfFirstBuyWasExecuted().otstupOriginal]: ",otstupOriginal);
-		if(openBids == 0 && otstupOriginal == 0)
+		if((ordersOriginalValue == openBids && otstupOriginal == 0) || openBids == 0)
 		{
 			trader.groupStop("TraderMainRestart");
 			trader.groupStart("TraderMainRestart");
