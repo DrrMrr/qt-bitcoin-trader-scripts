@@ -116,7 +116,7 @@
 		script1();
 		sledcikl();
 		trader.timer(30, "rrr()");
-		trader.timer(180, "checkIfFirstBuyWasExecuted()");		
+		trader.timer(45, "checkIfFirstBuyWasExecuted()");		
 		trader.log("VAL[END: script2()]: ");
 		//////////////////////////////
 		fileLogger = "script2().stop";
@@ -223,30 +223,33 @@
 		
 	}
 
-	function setNewRestartValue() {
+	function setNewRestartValue() {		
 		//////////////////////////////
 		fileLogger = "setNewRestartValue().start";
 		logger();
 		//////////////////////////////
-		var temp = trader.get("BidPrice");
-		trader.log("VAL[setNewRestartValue().temp]: ", temp);
-		trader.log("VAL[setNewRestartValue().temp]: ", minValueAfterLastRestart);
-
-		//set new minValueAfterLastRestart
-		if(temp < minValueAfterLastRestart)
+		if(resetBidsCondition == "true")
 		{
-			minValueAfterLastRestart = temp;
+			var temp = trader.get("BidPrice");
+			trader.log("VAL[setNewRestartValue().temp]: ", temp);
+			trader.log("VAL[setNewRestartValue().temp]: ", minValueAfterLastRestart);
 
-			if(profitInDollarsConditioan == "true")
+			//set new minValueAfterLastRestart
+			if(temp < minValueAfterLastRestart)
 			{
-				rest = temp + (profitInDollars * resetPrice);
+				minValueAfterLastRestart = temp;
+
+				if(profitInDollarsConditioan == "true")
+				{
+					rest = temp + (profitInDollars * resetPrice);
+				}
+				else
+				{
+					rest = temp + ((temp / 100 * profitInPercentage) * resetPrice);
+				}
 			}
-			else
-			{
-				rest = temp + ((temp / 100 * profitInPercentage) * resetPrice);
-			}
+			trader.log("VAL[setNewRestartValue().rest]: ", rest);
 		}
-		trader.log("VAL[setNewRestartValue().rest]: ", rest);
 		//////////////////////////////
 		fileLogger = "setNewRestartValue().stop";
 		logger();
@@ -270,7 +273,7 @@
 
 		//reset bids in resetPrice condition is reached
 		//  && resetBidsCondition == true
-		if (bidPrice >= rest) {
+		if (bidPrice >= rest && resetBidsCondition = "true") {
 
 			trader.log("VAL[rrr().get(OpenAsksCount)]: ", trader.get("OpenAsksCount"));
 
