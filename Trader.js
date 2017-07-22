@@ -47,7 +47,7 @@
 	var profitInPercentageFile = variablePath + "profitInPercentage.txt";
 	var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 	///////////////////////////////////////////////////////////////////
-	var profitInDollarsFileConditioan = variablePath + "profitInDollarsConditioan.txt";
+	var profitInDollarsFileConditioan = variablePath + "profitInDollarsCondition.txt";
 	var profitInDollarsConditioan = parseFloat(trader.fileReadAll(profitInDollarsFileConditioan));
 	///////////////////////////////////////////////////////////////////
 
