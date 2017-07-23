@@ -57,8 +57,8 @@
 	var resetPriceFile = variablePath + "resetPrice.txt";
 	var resetPrice = parseFloat(trader.fileReadAll(resetPriceFile));
 	///////////////////////////////////////////////////////////////////
-	var resetBidsConditionFile = variablePath + "resetBidsCondition.txt";
-	var resetBidsCondition = parseFloat(trader.fileReadAll(resetBidsConditionFile));
+	var resetBidsEnabledFile = variablePath + "resetBidsEnabled.txt";
+	var resetBidsEnabled = parseFloat(trader.fileReadAll(resetBidsEnabledFile));
 	///////////////////////////////////////////////////////////////////
 	var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
 	///////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@
 		fileLogger = "setNewRestartValue().start";
 		logger();
 		//////////////////////////////
-		if(resetBidsCondition == "true")
+		if(resetBidsEnabled == "true")
 		{
 			var temp = trader.get("BidPrice");
 			trader.log("VAL[setNewRestartValue().temp]: ", temp);
@@ -272,8 +272,8 @@
 
 
 		//reset bids in resetPrice condition is reached
-		//  && resetBidsCondition == true
-		if (bidPrice >= rest && resetBidsCondition == "true") {
+		//  && resetBidsEnabled == true
+		if (bidPrice >= rest && resetBidsEnabled == "true") {
 
 			trader.log("VAL[rrr().get(OpenAsksCount)]: ", trader.get("OpenAsksCount"));
 
