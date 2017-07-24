@@ -42,8 +42,8 @@
 	var profitInPercentageFile = variablePath + "profitInPercentage.txt";
 	var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 	///////////////////////////////////////////////////////////////////
-	var profitInDollarsFileConditioan = variablePath + "profitInDollarsCondition.txt";
-	var profitInDollarsConditioan = trader.fileReadAll(profitInDollarsFileConditioan);
+	var profitInDollarsFileCondition = variablePath + "profitInDollarsCondition.txt";
+	var profitInDollarsCondition = trader.fileReadAll(profitInDollarsFileCondition).toString().trim();
 	///////////////////////////////////////////////////////////////////
 	var feeTakerFile = variablePath + "feeTaker.txt";
 	var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
@@ -60,7 +60,7 @@
 	var resetPrice = parseFloat(trader.fileReadAll(resetPriceFile));
 	///////////////////////////////////////////////////////////////////
 	var resetBidsEnabledFile = variablePath + "resetBidsEnabled.txt";
-	var resetBidsEnabled = trader.fileReadAll(resetBidsEnabledFile);
+	var resetBidsEnabled = trader.fileReadAll(resetBidsEnabledFile).toString().trim();
 	///////////////////////////////////////////////////////////////////
 	var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
 	///////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@
 	    if (temp < minValueAfterLastRestart) {
 	        minValueAfterLastRestart = temp;
 
-	        if (profitInDollarsConditioan == "true") {
+	        if (profitInDollarsCondition == "true") {
 	            rest = temp + (profitInDollars * resetPrice);
 	        } else {
 	            rest = temp + ((temp / 100 * profitInPercentage) * resetPrice);
@@ -257,13 +257,21 @@
 	}
 
 
+	function strcmp(a, b)
+	{   
+		if (a.toString() < b.toString()) return -1;
+    	if (a.toString() > b.toString()) return 1;
+    	return 0; 
+	}
 	function rrr() {
 	    //////////////////////////////
 	    fileLogger = "rrr().start";
 	    logger();
 	    //////////////////////////////
-		 trader.log("VAL[START: rrr().resetBidsEnabled]: ", resetBidsEnabled);
-	    if (resetBidsEnabled == "true") {
+		
+	    //if (strcmp(resetBidsEnabled, "true") == 0) {
+	    //if (strcmp(resetBidsEnabled.trim(), "true") == 0) {
+		if (resetBidsEnabled == "true") {
 	        setNewRestartValue();
 
 
@@ -503,7 +511,7 @@
 	    trader.log("VAL[END: venakid().profit()]: ", profit);
 	    trader.log("VAL[END: venakid().(trader.get(LastPrice)/100)]: ", (trader.get("LastPrice") / 100));
 	    trader.log("VAL[END: venakid().(100+profit-1)]: ", (100 + profit - 1));
-	    if (profitInDollarsConditioan == "true") {
+	    if (profitInDollarsCondition == "true") {
 	        trader.log("VAL[END: venakid().profitInDollars]: ", profitInDollars);
 	        trader.log("VAL[END: venakid().((trader.get(LastPrice)/100)*profit)+ profitInDollars]: ", ((trader.get("LastPrice") * profit) + profitInDollars));
 	    } else {
@@ -518,7 +526,7 @@
 	    var buyFee = lastBuyPrice / 1000 * (feeTaker * 10);
 	    var absValue = Math.abs(lastBuyPrice - trader.get("LastPrice"));
 
-	    if (profitInDollarsConditioan == "true") {
+	    if (profitInDollarsCondition == "true") {
 	        if (absValue < 2) {
 	            trader.sell("ETHBTC", lastETHbalance, (lastBuyPrice + buyFee + profitInDollars) / ((1000 - 10 * feeTaker)) * 1000);
 	            trader.log("VAL[END: venakid().SELL1]: ", (lastBuyPrice + buyFee + profitInDollars) / ((1000 - 10 * feeTaker)) * 1000);
