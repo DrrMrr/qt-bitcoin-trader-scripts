@@ -287,8 +287,10 @@
 
 	            //   if(trader.get("OpenBidsCount") == orders) {
 	            //       trader.log("VAL[rrr().trader.get(OpenBidsCount) == orders");
-	            trader.groupStop("Trader");
-	            trader.groupStart("Trader");
+		    //trader.groupStop("Trader");
+	            //trader.groupStart("Trader");
+	            trader.groupStop("TraderMainRestart");
+	            trader.groupStart("TraderMainRestart");
 
 	            script1();
 	            sledcikl();
