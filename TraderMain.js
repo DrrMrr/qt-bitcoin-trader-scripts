@@ -52,7 +52,7 @@ trader.groupStop("Trader");
 trader.groupStart("Trader");
 
 
-trader.timer(23, "restartEverything()");
+trader.timer(30, "restartEverything()");
 
 function restartEverything() {
 	
@@ -63,8 +63,11 @@ function restartEverything() {
 
 	trader.fileWrite(lastETHbalanceFile,trader.get("Balance","ETH"));
 	numberOfBids = trader.get("OpenBidsCount");
-	trader.log("VAL[restartEverything().numberOfBids]: ", numberOfBids);
-	trader.log("VAL[restartEverything().orders]: ", orders);
+	trader.log("VAL[restartEverything().numberOfAsks]: ", numberOfAsks);
+	trader.log("VAL[restartEverything().numberOfAsksOld]: ", numberOfAsksOld);
+	trader.log("VAL[restartEverything().lastSale]: ", lastSale);
+	trader.log("VAL[restartEverything().trader.get(LastMySellPrice)]: ", trader.get("LastMySellPrice"));
+	trader.log("VAL[restartEverything().trader.get(OpenBidsCount)]: ", trader.get("OpenBidsCount"));
 	//check, if new bids have been offered
 	//if(numberOfAsks != numberOfAsksOld)
 	//{
