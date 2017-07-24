@@ -43,7 +43,7 @@
 	var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 	///////////////////////////////////////////////////////////////////
 	var profitInDollarsFileConditioan = variablePath + "profitInDollarsCondition.txt";
-	var profitInDollarsConditioan = parseFloat(trader.fileReadAll(profitInDollarsFileConditioan));
+	var profitInDollarsConditioan = trader.fileReadAll(profitInDollarsFileConditioan);
 	///////////////////////////////////////////////////////////////////
 	var feeTakerFile = variablePath + "feeTaker.txt";
 	var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
@@ -60,7 +60,7 @@
 	var resetPrice = parseFloat(trader.fileReadAll(resetPriceFile));
 	///////////////////////////////////////////////////////////////////
 	var resetBidsEnabledFile = variablePath + "resetBidsEnabled.txt";
-	var resetBidsEnabled = parseFloat(trader.fileReadAll(resetBidsEnabledFile));
+	var resetBidsEnabled = trader.fileReadAll(resetBidsEnabledFile);
 	///////////////////////////////////////////////////////////////////
 	var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
 	///////////////////////////////////////////////////////////////////
@@ -236,7 +236,7 @@
 
 	    var temp = trader.get("BidPrice");
 	    trader.log("VAL[setNewRestartValue().temp]: ", temp);
-	    trader.log("VAL[setNewRestartValue().temp]: ", minValueAfterLastRestart);
+	    trader.log("VAL[setNewRestartValue().minValueAfterLastRestart]: ", minValueAfterLastRestart);
 
 	    //set new minValueAfterLastRestart
 	    if (temp < minValueAfterLastRestart) {
@@ -287,10 +287,10 @@
 
 	            //   if(trader.get("OpenBidsCount") == orders) {
 	            //       trader.log("VAL[rrr().trader.get(OpenBidsCount) == orders");
-		    //trader.groupStop("Trader");
-	            //trader.groupStart("Trader");
-	            trader.groupStop("TraderMainRestart");
-	            trader.groupStart("TraderMainRestart");
+		    trader.groupStop("Trader");
+	            trader.groupStart("Trader");
+	            //trader.groupStop("TraderMainRestart");
+	            //trader.groupStart("TraderMainRestart");
 
 	            script1();
 	            sledcikl();
