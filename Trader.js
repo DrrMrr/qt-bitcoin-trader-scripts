@@ -385,6 +385,10 @@
 	}
 
 	function koa() {
+		
+		//cancel previous bids
+		if(trader.get("OpenBidsCount") > 0)
+			trader.cancelBids("ETHBTC");
 	    //////////////////////////////
 	    fileLogger = "koa().start";
 	    logger();
