@@ -64,6 +64,12 @@
 	///////////////////////////////////////////////////////////////////
 	var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
 	///////////////////////////////////////////////////////////////////
+	var firstBidPriceFile = variablePath + "firstBidPrice.txt";
+	var firstBidPrice = parseFloat(trader.fileReadAll(firstBidPriceFile));
+	///////////////////////////////////////////////////////////////////
+	var firstBidPriceEnabledFile = variablePath + "firstBidPriceEnabled.txt";
+	var firstBidPriceEnabled = trader.fileReadAll(firstBidPriceEnabledFile).toString().trim();
+	///////////////////////////////////////////////////////////////////
 
 
 
@@ -401,14 +407,29 @@
 	    }
 	    trader.log("2");
 	    var amount = all / yyy;
+		var firstBidPriceDiff = 0;
 	    amstart = amount;
 	    trader.log("3");
 	    for (var i = 0; i < orders - openAsks;) {
+			
+			if(i == 0 && firstBidPriceEnabled == "true")
+			{
+				if(firstBidPrice < amount)
+				{
+					firstBidPriceDiff = amount - firstBidPrice;
+					amount = firstBidPrice;					
+				}
+			}
+			
 	        trader.buy("ETHBTC", amount / price, price);
 	        myVolumes[i] = amount;
 	        myPrices[i] = price;
 	        price = price - raznost;
-	        amount = amount * martin;
+			if(i == 1 && firstBidPriceEnabled == "true")
+				amount = (amount + firstBidPriceDiff) * martin;
+			else
+				amount = amount * martin;
+	        
 	        i = i + 1;
 	    }
 
