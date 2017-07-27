@@ -70,7 +70,7 @@
 	var firstBidPriceEnabledFile = variablePath + "firstBidPriceEnabled.txt";
 	var firstBidPriceEnabled = trader.fileReadAll(firstBidPriceEnabledFile).toString().trim();
 	///////////////////////////////////////////////////////////////////
-	var allBidPriceFile = variablePath + "allBidPrice.txt";
+	var allBidsPriceFile = variablePath + "allBidsPrice.txt";
 	var allBidsPrice = parseFloat(trader.fileReadAll(allBidsPriceFile));
 	///////////////////////////////////////////////////////////////////
 	var allBidsPriceEnabledFile = variablePath + "allBidsPriceEnabled.txt";
