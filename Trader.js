@@ -70,6 +70,12 @@
 	var firstBidPriceEnabledFile = variablePath + "firstBidPriceEnabled.txt";
 	var firstBidPriceEnabled = trader.fileReadAll(firstBidPriceEnabledFile).toString().trim();
 	///////////////////////////////////////////////////////////////////
+	var allBidPriceFile = variablePath + "allBidPrice.txt";
+	var allBidsPrice = parseFloat(trader.fileReadAll(allBidsPriceFile));
+	///////////////////////////////////////////////////////////////////
+	var allBidsPriceEnabledFile = variablePath + "allBidsPriceEnabled.txt";
+	var allBidsPriceEnabled = trader.fileReadAll(allBidsPriceEnabledFile).toString().trim();
+	///////////////////////////////////////////////////////////////////
 
 
 
@@ -387,7 +393,7 @@
 	function koa() {
 		
 		//cancel previous bids
-		if(trader.get("OpenBidsCount") > 0)
+		if(trader.get("OpenBidsCount") == 0)
 			trader.cancelBids("ETHBTC");
 	    //////////////////////////////
 	    fileLogger = "koa().start";
@@ -415,24 +421,26 @@
 	    amstart = amount;
 	    trader.log("3");
 	    for (var i = 0; i < orders - openAsks;) {
-			
-			if(i == 0 && firstBidPriceEnabled == "true")
+			if(allBidsPriceEnabled == "true")
+			{
+				amount = allBidsPrice;
+			}
+			else if(i == 0 && firstBidPriceEnabled == "true")
 			{
 				if(firstBidPrice < amount)
 				{
 					firstBidPriceDiff = amount - firstBidPrice;
 					amount = firstBidPrice;					
 				}
-			}
-			
+			}			
 	        trader.buy("ETHBTC", amount / price, price);
 	        myVolumes[i] = amount;
 	        myPrices[i] = price;
 	        price = price - raznost;
-			if(i == 1 && firstBidPriceEnabled == "true")
-				amount = (amount + firstBidPriceDiff) * martin;
-			else
-				amount = amount * martin;
+			//if(i == 1 && firstBidPriceEnabled == "true")
+			//	amount = (amount + firstBidPriceDiff) * martin;
+			//else
+			amount = amount * martin;
 	        
 	        i = i + 1;
 	    }
