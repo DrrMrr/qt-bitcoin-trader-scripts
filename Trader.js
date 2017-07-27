@@ -393,7 +393,7 @@
 	function koa() {
 		
 		//cancel previous bids
-		if(trader.get("OpenBidsCount") == 0)
+		if(trader.get("OpenBidsCount") != 0)
 			trader.cancelBids("ETHBTC");
 	    //////////////////////////////
 	    fileLogger = "koa().start";
@@ -420,7 +420,13 @@
 		var firstBidPriceDiff = 0;
 	    amstart = amount;
 	    trader.log("3");
+		trader.log("VAL[koa().orders]: ", orders);
 	    for (var i = 0; i < orders - openAsks;) {
+			trader.log("VAL[koa().i]: ", i);
+			trader.log("VAL[koa().allBidsPriceEnabled]: ", allBidsPriceEnabled);
+			trader.log("VAL[koa().allBidsPrice]: ", allBidsPrice);
+			trader.log("VAL[koa().amount]: ", amount);
+
 			if(allBidsPriceEnabled == "true")
 			{
 				amount = allBidsPrice;
@@ -433,7 +439,10 @@
 					amount = firstBidPrice;					
 				}
 			}			
-	        trader.buy("ETHBTC", amount / price, price);
+			if((allBidsPriceEnabled == "true") || (i == 1 && firstBidPriceEnabled == "true"))
+				trader.buy("ETHBTC", amount, price);
+			else				
+		        trader.buy("ETHBTC", amount / price, price);
 	        myVolumes[i] = amount;
 	        myPrices[i] = price;
 	        price = price - raznost;
@@ -493,7 +502,7 @@
 	    //////////////////////////////
 	}
 
-	function sellAfterBuy() {
+	/*function sellAfterBuy() {
 	    //////////////////////////////
 	    fileLogger = "sellAfterBuy().start";
 	    logger();
@@ -514,7 +523,7 @@
 	    fileLogger = "sellAfterBuy().stop";
 	    logger();
 	    //////////////////////////////
-	}
+	}*/
 
 	function resetArrays() {
 	    //////////////////////////////
@@ -648,3 +657,10 @@
 	    logger();
 	    //////////////////////////////
 	}
+
+	trader.on("LastMySellPrice").changed() {
+		trader.log("trader.on(LastMySellPrice).changed()", "");
+	    trader.groupStop("TraderMainRestart");
+        trader.groupStart("TraderMainRestart");
+	}
+
