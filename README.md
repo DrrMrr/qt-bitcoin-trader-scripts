@@ -118,8 +118,23 @@ this value is in percentage and it defines, if price goes up, when all the bids 
 
 _resetBidsEnabled.txt_
 
-if this variabled is set to true, then all bids will be reset and new bids will be generated, when condition in resetPrice.txt will be reached.
+if this variable is set to true, then all bids will be reset and new bids will be generated, when condition in resetPrice.txt will be reached.
 
+_allBidsPrice.txt_
+
+If a variable in allBidsPriceEnabled.txt is set to true, then all bids will set at fixed price. This can be good if you want to make more bids in closer range between them.
+
+_allBidsPriceEnabled.txt_
+
+Condition for setting all bids with same price.
+
+_firstBidPrice.txt_
+
+If variable in firstBidPriceEnabled.txt is set to true, then first price will be at price that was set. If allBidsPriceEnabled is also true, then the price set in file allBidsPrice.txt will prevail.
+
+_firstBidPriceEnabled.txt_
+
+Condition for setting first bid with fixed price.
 
 _StepBetweenOrders.txt_
 
