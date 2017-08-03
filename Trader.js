@@ -5,6 +5,8 @@
 	// Below if you do not Charite do not change anything. 
 	var rest = 100000000000;
 	var filePath = variablePath + "qtLastBTCbalance.log";
+	var firstBuyChecked = false;
+	var lastMyBuyPriceOriginal = trader.get("LastMyBuyPrice");
 
 	/////////////////////////////////////////////////////////////////
 	////////// SCRIPT 1 /////////////////////////////////////////////
@@ -231,10 +233,11 @@
 	    trader.log("VAL[checkIfFirstBuyWasExecuted().ordersOriginalValue]: ", ordersOriginalValue);
 	    trader.log("VAL[checkIfFirstBuyWasExecuted().openBids]: ", openBids);
 	    trader.log("VAL[checkIfFirstBuyWasExecuted().otstupOriginal]: ", otstupOriginal);
-	    if ((ordersOriginalValue == openBids || openBids == 0) && otstupOriginal == 0) {
+	    if (((ordersOriginalValue == openBids || openBids == 0) || (firstBuyChecked == false  && ordersOriginalValue != openBids && lastMyBuyPriceOriginal == trader.get("LastMyBuyPrice"))) && otstupOriginal == 0) {
 	        trader.groupStop("TraderMainRestart");
 	        trader.groupStart("TraderMainRestart");
 	    }
+		firstBuyChecked = true;
 
 
 	}
