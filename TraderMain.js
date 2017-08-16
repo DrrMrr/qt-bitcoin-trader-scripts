@@ -35,6 +35,9 @@ var bidPriceFile = variablePath + "bidPrice.txt";
 var bidPrice = trader.get("BidPrice");
 trader.fileWrite(bidPriceFile,bidPrice);
 ///////////////////////////////////////////////////////////////////
+var lastMySellPriceFile = variablePath + "lastMySellPrice.txt";
+var lastMySellPrice = parseFloat(trader.fileReadAll(lastMySellPriceFile));
+///////////////////////////////////////////////////////////////////
 
 var perekrDif = 0.25;
 var martinDif = 0.1;
@@ -55,75 +58,84 @@ trader.groupStart("Trader");
 trader.timer(30, "restartEverything()");
 
 function restartEverything() {
-	
-	trader.log("VAL[START: restartEverything()]: ");
+	var lastMySellPriceOld = trader.get("LastMySellPrice");
+	if(lastMySellPriceOld != lastMySellPrice)
+	{
+		trader.groupStop("TraderMainRestart");
+		trader.groupStart("TraderMainRestart");
+	}
+	else
+	{
 
-	bidPrice = trader.get("BidPrice");
-	trader.fileWrite(bidPriceFile,bidPrice);
+		trader.log("VAL[START: restartEverything()]: ");
 
-	trader.fileWrite(lastETHbalanceFile,trader.get("Balance","ETH"));
-	numberOfBids = trader.get("OpenBidsCount");
-	trader.log("VAL[restartEverything().numberOfAsks]: ", numberOfAsks);
-	trader.log("VAL[restartEverything().numberOfAsksOld]: ", numberOfAsksOld);
-	trader.log("VAL[restartEverything().lastSale]: ", lastSale);
-	trader.log("VAL[restartEverything().trader.get(LastMySellPrice)]: ", trader.get("LastMySellPrice"));
-	trader.log("VAL[restartEverything().trader.get(OpenBidsCount)]: ", trader.get("OpenBidsCount"));
-	//check, if new bids have been offered
-	//if(numberOfAsks != numberOfAsksOld)
-	//{
-		trader.log("VAL[restartEverything.KORAK 0");
-		//sale has been made
-		//prodaja se je zgodila nekje vmes
-		if((((numberOfAsks < numberOfAsksOld) || (numberOfAsks == numberOfAsksOld  && lastSale != 0)) &&lastSale != trader.get("LastMySellPrice")) || trader.get("OpenBidsCount") == 0)
-		{
-			trader.log("VAL[restartEverything.KORAK 1");
-			trader.log("VAL[restartEverything.numberOfBids]: ", numberOfBids);
-			//numberOfBids++;
-			trader.log("VAL[restartEverything.IncreaseNumberOfBids()]: ");
-			trader.log("VAL[restartEverything.IncreaseNumberOfBids()]: ", numberOfBids);
-			//trader.fileWrite(ordersFile,numberOfBids);
+		bidPrice = trader.get("BidPrice");
+		trader.fileWrite(bidPriceFile,bidPrice);
+
+		trader.fileWrite(lastETHbalanceFile,trader.get("Balance","ETH"));
+		numberOfBids = trader.get("OpenBidsCount");
+		trader.log("VAL[restartEverything().numberOfAsks]: ", numberOfAsks);
+		trader.log("VAL[restartEverything().numberOfAsksOld]: ", numberOfAsksOld);
+		trader.log("VAL[restartEverything().lastSale]: ", lastSale);
+		trader.log("VAL[restartEverything().trader.get(LastMySellPrice)]: ", trader.get("LastMySellPrice"));
+		trader.log("VAL[restartEverything().trader.get(OpenBidsCount)]: ", trader.get("OpenBidsCount"));
+		//check, if new bids have been offered
+		//if(numberOfAsks != numberOfAsksOld)
+		//{
+			trader.log("VAL[restartEverything.KORAK 0");
+			//sale has been made
+			//prodaja se je zgodila nekje vmes
+			if((((numberOfAsks < numberOfAsksOld) || (numberOfAsks == numberOfAsksOld  && lastSale != 0)) &&lastSale != trader.get("LastMySellPrice")) || trader.get("OpenBidsCount") == 0)
+			{
+				trader.log("VAL[restartEverything.KORAK 1");
+				trader.log("VAL[restartEverything.numberOfBids]: ", numberOfBids);
+				//numberOfBids++;
+				trader.log("VAL[restartEverything.IncreaseNumberOfBids()]: ");
+				trader.log("VAL[restartEverything.IncreaseNumberOfBids()]: ", numberOfBids);
+				//trader.fileWrite(ordersFile,numberOfBids);
 			
+				trader.log("VAL[restartEverything.perekr]: ", perekr);
+				//perekr += perekrDif;
+				trader.fileWrite(perekrFile,perekr);
+			
+				trader.log("VAL[restartEverything.martin]: ", martin);
+				//martin += martinDif;
+				trader.fileWrite(martinFile,martin);
+			
+				trader.log("VAL[restartEverything.otstup]: ", otstup);
+				otstup = 0;
+				trader.fileWrite(otstupFile,otstup);
+			
+				lastSale = trader.get("LastMySellPrice");
+				trader.fileWrite(lastSaleFile,lastSale);
+			
+				trader.groupStop("TraderMainRestart");
+				trader.groupStart("TraderMainRestart");
+			}
+		//}	
+	
+	
+		if(numberOfBids != orders && ((orders - numberOfBids) > 1))
+		{
+			trader.log("VAL[restartEverything.KORAK 2");
+			trader.log("VAL[restartEverything.changeNumberOfBids()]: ");
+			//trader.fileWrite(ordersFile,numberOfBids);
+		
 			trader.log("VAL[restartEverything.perekr]: ", perekr);
-			//perekr += perekrDif;
+			//perekr -= perekrDif;
 			trader.fileWrite(perekrFile,perekr);
 			
 			trader.log("VAL[restartEverything.martin]: ", martin);
-			//martin += martinDif;
+			//martin -= martinDif;
 			trader.fileWrite(martinFile,martin);
-			
-			trader.log("VAL[restartEverything.otstup]: ", otstup);
-			otstup = 0;
-			trader.fileWrite(otstupFile,otstup);
-			
-			lastSale = trader.get("LastMySellPrice");
-			trader.fileWrite(lastSaleFile,lastSale);
-			
-			trader.groupStop("TraderMainRestart");
-			trader.groupStart("TraderMainRestart");
+		
+			//trader.groupStop("Trader");
+			//trader.groupStart("Trader");
+			orders = numberOfBids;
 		}
-	//}	
 	
-	
-	if(numberOfBids != orders && ((orders - numberOfBids) > 1))
-	{
-		trader.log("VAL[restartEverything.KORAK 2");
-		trader.log("VAL[restartEverything.changeNumberOfBids()]: ");
-		//trader.fileWrite(ordersFile,numberOfBids);
-		
-		trader.log("VAL[restartEverything.perekr]: ", perekr);
-		//perekr -= perekrDif;
-		trader.fileWrite(perekrFile,perekr);
-			
-		trader.log("VAL[restartEverything.martin]: ", martin);
-		//martin -= martinDif;
-		trader.fileWrite(martinFile,martin);
-		
-		//trader.groupStop("Trader");
-		//trader.groupStart("Trader");
 		orders = numberOfBids;
+		numberOfAsksOld = numberOfAsks;
+		trader.log("VAL[END: restartEverything()]: ");
 	}
-	
-	orders = numberOfBids;
-	numberOfAsksOld = numberOfAsks;
-	trader.log("VAL[END: restartEverything()]: ");
 }

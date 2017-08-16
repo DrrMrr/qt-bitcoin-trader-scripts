@@ -6,7 +6,9 @@
 	var rest = 100000000000;
 	var filePath = variablePath + "qtLastBTCbalance.log";
 	var firstBuyChecked = false;
-	var lastMyBuyPriceOriginal = trader.get("LastMyBuyPrice");
+
+	var lastMyBuyPriceOriginalFile = variablePath + "lastMyBuyPrice.txt";
+	var lastMyBuyPriceOriginal = parseFloat(trader.fileReadAll(lastMyBuyPriceOriginalFile));
 
 	/////////////////////////////////////////////////////////////////
 	////////// SCRIPT 1 /////////////////////////////////////////////
@@ -137,7 +139,7 @@
 	    script1();
 	    sledcikl();
 	    trader.timer(30, "rrr()");
-	    trader.timer(45, "checkIfFirstBuyWasExecuted()");
+	    trader.timer(75, "checkIfFirstBuyWasExecuted()");
 	    trader.log("VAL[END: script2()]: ");
 	    //////////////////////////////
 	    fileLogger = "script2().stop";
@@ -233,6 +235,20 @@
 	    trader.log("VAL[checkIfFirstBuyWasExecuted().ordersOriginalValue]: ", ordersOriginalValue);
 	    trader.log("VAL[checkIfFirstBuyWasExecuted().openBids]: ", openBids);
 	    trader.log("VAL[checkIfFirstBuyWasExecuted().otstupOriginal]: ", otstupOriginal);
+
+		fileLogger = "Trader.openBids: " + openBids;
+		logger();
+		fileLogger = "Trader.ordersOriginalValue: " + ordersOriginalValue;
+		logger();
+		fileLogger = "Trader.otstupOriginal: " + otstupOriginal;
+		logger();
+		fileLogger = "Trader.firstBuyChecked: " + firstBuyChecked;
+		logger();
+		fileLogger = "Trader.lastMyBuyPriceOriginal: " + lastMyBuyPriceOriginal;
+		logger();
+		fileLogger = "Trader.trader.get(LastMyBuyPrice): " + trader.get("LastMyBuyPrice");
+		logger();
+	
 	    if (((ordersOriginalValue == openBids || openBids == 0) || (firstBuyChecked == false  && ordersOriginalValue != openBids && lastMyBuyPriceOriginal == trader.get("LastMyBuyPrice"))) && otstupOriginal == 0) {
 	        trader.groupStop("TraderMainRestart");
 	        trader.groupStart("TraderMainRestart");
