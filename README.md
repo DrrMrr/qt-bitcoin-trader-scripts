@@ -45,7 +45,8 @@ Open four new scripts in your QT Bitcoin Trader and name them
 - TraderMain
 - TraderMainRestart
 - TraderValues
-
+- TraderLastBuy
+- TraderRestartOnSale (this script is optional and it runs individually)
 
 **Copy script files into QT Bitcoin Trader**
 
