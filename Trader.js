@@ -60,7 +60,7 @@ var profitFile = variablePath + "Profit.txt";
 var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit How to lay into each sell order. 
 ///////////////////////////////////////////////////////////////////
 //Margin.txt
-var martinFile = variablePath + "Martin.txt";
+var martinFile = variablePath + "martinStep.txt";
 var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////
 var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
