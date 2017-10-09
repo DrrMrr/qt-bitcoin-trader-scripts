@@ -1,0 +1,7 @@
+[JLScript]
+Version=1
+Name=TraderMainRestart
+Notes=
+Encrypted=false
+LogRowsCount=50
+Data="var variablePath = \"D:\\\\Damjan\\\\Qsync\\\\Bitcoin\\\\QT Bitcoin Trader\\\\QTBitcointTrader - 11.09.2017\\\\\";\n///////////////\t\tlog to file or window\t\t///////////////////\nvar logToFile = true;\nvar logToWindow = true;\nvar logFile = variablePath + \"TraderMainRestartLogger.txt\";\n\nfunction eventLogger(tempString) {\n    if (logToFile)\n        trader.fileAppend(logFile, trader.dateTimeString() + \": \" + tempString);\n    if (logToWindow)\n        trader.log(tempString);\n}\neventLogger(\"Restart TraderMain\");\ntrader.groupStop(\"TraderLastBuy\");\ntrader.groupStop(\"TraderMain\");\ntrader.groupStop(\"Trader\");\ntrader.delay(5,\"StartEverything()\");\n\n\nfunction StartEverything()\n{\n    var scriptName = \"StartEverything()\";\n    eventLogger(scriptName + \".START\");\n   \n    trader.groupStart(\"TraderMain\");\n\n    eventLogger(scriptName + \".END\");\n}"
