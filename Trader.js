@@ -51,12 +51,12 @@ var ordersFile = variablePath + "maxNumberOfBids.txt";
 var orders = parseFloat(trader.fileReadAll(ordersFile)); // 2 to 20,how many buy-to place orders in the amount of overlap. //default 13
 var ordersOriginalValue = orders;
 ///////////////////////////////////////////////////////////////////
-//StepBetweenOrders.txt
-var stepBetweenOrdersFile = variablePath + "StepBetweenOrders.txt";
+//stepBetweenOrders.txt
+var stepBetweenOrdersFile = variablePath + "stepBetweenOrders.txt";
 var stepBetweenOrders = parseFloat(trader.fileReadAll(stepBetweenOrdersFile)); // in% overlap stroke rates,calculating the depth of the table buy orders.  For example,in a first step,the price 10BTC percentage of overlap of 20% means that the table will be set in the range // 8-10BTC.  //default 30
 ///////////////////////////////////////////////////////////////////
-//Profit.txt
-var profitFile = variablePath + "Profit.txt";
+//profit.txt
+var profitFile = variablePath + "profit.txt";
 var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit How to lay into each sell order. 
 ///////////////////////////////////////////////////////////////////
 //martinStep.txt
