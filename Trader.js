@@ -35,7 +35,7 @@ var currencySecondary = "ETH";
 
 ///////////////////////////////////////////////////////////////////
 // in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
-var otstupFile = variablePath + "FirstBuy.txt";
+var otstupFile = variablePath + "firstBuyStep.txt";
 var otstup = parseFloat(trader.fileReadAll(otstupFile));
 var otstupOriginal = otstup;
 ///////////////////////////////////////////////////////////////////
