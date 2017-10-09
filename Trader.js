@@ -46,8 +46,8 @@ var raznostInPercentage = parseFloat(trader.fileReadAll(raznostInPercentageFile)
 var raznostInPercentageConditionFile = variablePath + "raznostInPercentageCondition.txt";
 var raznostInPercentageCondition = trader.fileReadAll(raznostInPercentageConditionFile).toString().trim();
 ///////////////////////////////////////////////////////////////////
-//NumberOfOrders.txt
-var ordersFile = variablePath + "NumberOfOrders.txt";
+//maxNumberOfBids.txt
+var ordersFile = variablePath + "maxNumberOfBids.txt";
 var orders = parseFloat(trader.fileReadAll(ordersFile)); // 2 to 20,how many buy-to place orders in the amount of overlap. //default 13
 var ordersOriginalValue = orders;
 ///////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ var stepBetweenOrders = parseFloat(trader.fileReadAll(stepBetweenOrdersFile)); /
 var profitFile = variablePath + "Profit.txt";
 var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit How to lay into each sell order. 
 ///////////////////////////////////////////////////////////////////
-//Margin.txt
+//martinStep.txt
 var martinFile = variablePath + "martinStep.txt";
 var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 ///////////////////////////////////////////////////////////////////

@@ -24,8 +24,8 @@ var otstup = parseFloat(trader.fileReadAll(otstupFile));
 var scriptName = "";
 eventLogger(scriptName + ".otstup: " + otstup);
 ///////////////////////////////////////////////////////////////////
-//NumberOfOrders.txt
-var ordersFile = variablePath + "NumberOfOrders.txt";
+//maxNumberOfBids.txt
+var ordersFile = variablePath + "maxNumberOfBids.txt";
 var orders = parseFloat(trader.fileReadAll(ordersFile)); // 2 to 20,how many buy-to place orders in the amount of overlap. //default 13
 eventLogger(scriptName + ".orders: " + orders);
 ///////////////////////////////////////////////////////////////////
