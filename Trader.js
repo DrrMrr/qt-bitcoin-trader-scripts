@@ -29,6 +29,13 @@ var lastMyBuyPriceOriginal = parseFloat(trader.fileReadAll(lastMyBuyPriceOrigina
 
 var currencyPrimary = "BTC";
 var currencySecondary = "ETH";
+var lastTradeStatus = "";
+var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
+var temp = trader.fileReadAll(lastTradeStatusFile).toString().trim();
+if(temp.length > 0)
+    lastTradeStatus = temp;
+else
+    lastTradeStatus = "BUY";
 
 /////////////////////////////////////////////////////////////////
 ////////// SCRIPT 1 /////////////////////////////////////////////
@@ -522,9 +529,7 @@ function canMakeBid() {
         eventLogger(scriptName + ".makeBid: " + makeBid);
         return makeBid;
     }
-
-    var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
-    var lastTradeStatus = trader.fileReadAll(lastTradeStatusFile).toString().trim();
+    
     eventLogger(scriptName + ".lastTradeStatus: " + lastTradeStatus);
     if (lastTradeStatus == "SELL") {
         eventLogger(scriptName + ".STEP7");
@@ -959,10 +964,11 @@ function restartEverything() {
 
 
 trader.on("LastMyBuyPrice").changed() {
-    var scriptName = "trader.on(LastMyBuyPrice).changed()";
+    var scriptName = "trader.on(LastMyBuyPrice.changed())";
     eventLogger(scriptName + ".START");
 
-    trader.fileWrite(lastTradeStatusFile, "BUY");
+    //trader.fileWrite(lastTradeStatusFile, "BUY");
+    lastTradeStatus = "BUY";
     eventLogger(scriptName + ".BUY");
 
     checkIfAskCanBeMade();
@@ -971,6 +977,16 @@ trader.on("LastMyBuyPrice").changed() {
     //trader.cancelBids(currencySecondary + currencyPrimary);
     //trader.groupStop("TraderMainRestart");
     //trader.groupStart("TraderMainRestart");
+
+    eventLogger(scriptName + ".END");
+}
+
+trader.on("LastMySellPrice").changed() {
+    var scriptName = "trader.on(LastMySellPrice.changed())";
+    eventLogger(scriptName + ".START");
+    
+    //trader.fileWrite(lastTradeStatusFile, "SELL");
+    lastTradeStatus = "SELL";  
 
     eventLogger(scriptName + ".END");
 }
