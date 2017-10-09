@@ -1,4 +1,4 @@
-var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader - 11.09.2017\\";
+var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader\\";
 
 ///////////////		log to file or window		///////////////////
 var logToFile = true;
