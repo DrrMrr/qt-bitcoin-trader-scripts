@@ -1,40 +1,75 @@
-var variablePath = "/home/damien/Desktop/QTBitcointTrader/";
-var fileLoggerFile = variablePath + "fileLoggerTrader3.txt";
+var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader - 11.09.2017\\";
+var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
+
+emptyLogFiles();
+///////////////		log to file or window		///////////////////
+var logToFile = true;
+var logToWindow = true;
+var logFile = variablePath + "TraderRestartOnSaleLogger.txt";
+
+function eventLogger(tempString) {
+    if (logToFile)
+        trader.fileAppend(logFile, trader.dateTimeString() + ": " + tempString);
+    if (logToWindow)
+        trader.log(tempString);
+}
+///////////////////////////////////////////////////////////////////
+
+var currencyPrimary = "BTC";
+var currencySecondary = "ETH";
 
 function restartEverything() {
-	trader.groupStart("TraderMainRestart");
-}
 
-function logger() {
-	    trader.fileAppend(fileLoggerFile, fileLogger + " - " + trader.dateTimeString());
-}
+    var scriptName = "restartEverything()";
+    eventLogger(scriptName + ".START");
 
-trader.on("LastMySellPrice").changed() {
-	trader.log("trader.on(LastMySellPrice).changed()", "");
-	trader.groupStop("TraderMain");
-	trader.groupStop("Trader");
-	trader.groupStop("TraderValues");	
-	trader.groupStop("TraderMainRestart");
-	trader.cancelBids("ETHBTC");
-	
-	fileLogger = "TraderRestartOnSale.trader.on(LastMySellPrice).changed(): YES";
-	logger();	
-	fileLogger = "TraderRestartOnSale.OpenAsksCount: " + trader.get("OpenAsksCount");
-	logger();
+    eventLogger(scriptName + ".Restart Trader & TraderMain & TraderMainRestart");
+    trader.groupStop("TraderMain");
+    trader.groupStop("Trader");
+    trader.groupStop("TraderMainRestart");
+    trader.cancelBids(currencySecondary + currencyPrimary);
+    trader.groupStart("TraderMainRestart");
 
-	trader.delay(15, "restartEverything()");
+    trader.fileWrite(lastTradeStatusFile, "SELL");
+    eventLogger(scriptName + ".SELL");
+
+    eventLogger(scriptName + ".END");
 }
 
 
-
-
-/*
-trader.on("OpenAsksCount").changed()
+trader.on("LastMyBuyPrice").changed()
 {
-	trader.log("trader.on(OpenAsksCount).changed()", "");
-	trader.groupStop("TraderMainRestart");
-	trader.groupStart("TraderMainRestart");	
+    var scriptName = "trader.on(LastMyBuyPrice).changed()";
+    eventLogger(scriptName + ".START");
+
+    trader.fileWrite(lastTradeStatusFile, "BUY");
+    eventLogger(scriptName + ".BUY");
+
+     eventLogger(scriptName + ".END");
 }
-*/
 
 
+trader.on("LastMySellPrice").changed() {    
+    var scriptName = "trader.on(LastMySellPrice).changed()";
+    eventLogger(scriptName + ".START");
+
+    trader.delay(5,"restartEverything()");
+    eventLogger(scriptName + ".END");
+}
+
+
+function emptyLogFiles() {
+    trader.fileWrite(lastTradeStatusFile, "SELL");
+    eventLogger("SELL");    
+    var emptyLogFile = "";
+    emptyLogFile = variablePath + "TraderLogger.txt";
+    trader.fileWrite(emptyLogFile, "");
+    emptyLogFile = variablePath + "TraderMainLogger.txt";
+    trader.fileWrite(emptyLogFile, "");
+    emptyLogFile = variablePath + "TraderMainRestartLogger.txt";
+    trader.fileWrite(emptyLogFile, "");
+    emptyLogFile = variablePath + "TraderLastBuyLogger.txt";
+    trader.fileWrite(emptyLogFile, "");
+    emptyLogFile = variablePath + "TraderRestartOnSaleLogger.txt";
+    trader.fileWrite(emptyLogFile, "");
+}

@@ -1,32 +1,34 @@
-var variablePath = "/home/damien/Desktop/QTBitcointTrader/";
-var fileLoggerFile = variablePath + "fileLoggerTrader2.txt";
-var lastMyBuyPrice= trader.get("LastMyBuyPrice");
+var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader - 11.09.2017\\";
+///////////////		log to file or window		///////////////////
+var logToFile = true;
+var logToWindow = true;
+var logFile = variablePath + "TraderLastBuyLogger.txt";
+
+function eventLogger(tempString) {
+    if (logToFile)
+        trader.fileAppend(logFile, trader.dateTimeString() + ": " + tempString);
+    if (logToWindow)
+        trader.log(tempString);
+}
+///////////		write last bid price	///////////////////////////
+var bidPriceFile = variablePath + "bidPrice.txt";
+var bidPrice = trader.get("BidPrice");
+eventLogger("bidPrice: " + bidPrice);
+trader.fileWrite(bidPriceFile, bidPrice);
+
+///////////		write LastMyBuyPrice & LastMySellPrice	///////////
+var lastMyBuyPrice = trader.get("LastMyBuyPrice");
 var lastMyBuyPriceFile = variablePath + "lastMyBuyPrice.txt";
-var lastMySellPrice= trader.get("LastMySellPrice");
+var lastMySellPriceOld = trader.get("LastMySellPrice");
 var lastMySellPriceFile = variablePath + "lastMySellPrice.txt";
+trader.fileWrite(lastMyBuyPriceFile, lastMyBuyPrice);
+trader.fileWrite(lastMySellPriceFile, lastMySellPriceOld);
+eventLogger("lastMyBuyPrice: " + lastMyBuyPrice);
+eventLogger("lastMySellPrice: " + lastMySellPriceOld);
 
-
-trader.fileWrite(lastMyBuyPriceFile,lastMyBuyPrice);
-trader.fileWrite(lastMySellPriceFile,lastMySellPrice);
-
-trader.log("VAL[lastMyBuyPrice]: ", lastMyBuyPrice);	
-trader.log("VAL[lastMySellPrice]: ", lastMySellPrice);
-fileLogger = "TraderLastBuy.lastMyBuyPrice: " + lastMyBuyPrice;
-logger();
-fileLogger = "TraderLastBuy.lastMySellPrice: " + lastMyBuyPrice;
-logger();
-
-
-function lastMyBuyPrice() {	
-	lastMyBuyPrice = trader.get("LastMyBuyPrice");	
-	trader.log("VAL[lastMyBuyPrice().lastMyBuyPrice]: ", lastMyBuyPrice);
-	trader.fileWrite(lastMyBuyPriceFile,lastMyBuyPrice);
-	fileLogger = "TraderLastBuy.lastMyBuyPrice: " + lastMyBuyPrice;
-	logger();
-}
-
-
-function logger() {
-	    trader.fileAppend(fileLoggerFile, fileLogger + " - " + trader.dateTimeString());
-}
-
+///////////		write currencySecondaryBalance	///////////////////
+var currencyPrimary = "BTC";
+var currencySecondary = "ETH";
+var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
+var currencySecondaryBalance = trader.get("Balance", currencySecondary);
+eventLogger("currencySecondaryBalance: " + currencySecondaryBalance);
