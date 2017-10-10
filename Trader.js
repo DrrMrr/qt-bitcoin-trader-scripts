@@ -701,14 +701,16 @@ function checkIfAskCanBeMade() {
     var scriptName = "checkIfAskCanBeMade()";
     eventLogger(scriptName + ".START");
 
+    eventLogger(scriptName + ".Read secondary balance");
     var currencySecondaryBalance = trader.get("Balance", currencySecondary);
+    eventLogger(scriptName + ".Read last secondary balance from file");
     lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
     eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
     eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
     eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
 
     //TODO - currencySecondaryKeepAmountFixedValue - not o.k.!!!!
-    if (lastCurrencySecondaryBallance > 0.000001) {
+    if (lastCurrencySecondaryBallance > 0.01) {
         eventLogger(scriptName + ".STEP1");
         makeAsk();
     }
@@ -986,7 +988,8 @@ trader.on("LastMySellPrice").changed() {
     eventLogger(scriptName + ".START");
     
     //trader.fileWrite(lastTradeStatusFile, "SELL");
-    lastTradeStatus = "SELL";  
+    lastTradeStatus = "SELL"; 
+	eventLogger(scriptName + ".SELL");	
 
     eventLogger(scriptName + ".END");
 }
