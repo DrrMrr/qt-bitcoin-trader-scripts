@@ -13,7 +13,7 @@ function eventLogger(tempString) {
 }
 ///////////////////////////////////////////////////////////////////
 lastMyBuyPrice();
-trader.timer(15, "lastMyBuyPrice()");
+trader.timer(60, "lastMyBuyPrice()");
 ///////////////////////////////////////////////////////////////////
 var currencyPrimary = "BTC";
 var currencySecondary = "ETH";

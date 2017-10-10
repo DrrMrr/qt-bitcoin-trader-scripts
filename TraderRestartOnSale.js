@@ -28,15 +28,15 @@ function restartEverything() {
     trader.groupStop("Trader");
     trader.groupStop("TraderMainRestart");
     trader.cancelBids(currencySecondary + currencyPrimary);
+    trader.fileWrite(lastTradeStatusFile, "SELL");
+    eventLogger(scriptName + ".SELL");
     trader.groupStart("TraderMainRestart");
 
-    //trader.fileWrite(lastTradeStatusFile, "SELL");
-    //eventLogger(scriptName + ".SELL");
 
     eventLogger(scriptName + ".END");
 }
 
-/*
+
 trader.on("LastMyBuyPrice").changed()
 {
     var scriptName = "trader.on(LastMyBuyPrice).changed()";
@@ -47,12 +47,13 @@ trader.on("LastMyBuyPrice").changed()
 
      eventLogger(scriptName + ".END");
 }
-*/
 
 
 trader.on("LastMySellPrice").changed() {    
     var scriptName = "trader.on(LastMySellPrice).changed()";
     eventLogger(scriptName + ".START");
+
+    trader.fileWrite(lastTradeStatusFile, "SELL");
 
     trader.delay(5,"restartEverything()");
     eventLogger(scriptName + ".END");

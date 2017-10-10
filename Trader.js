@@ -16,6 +16,23 @@
 
 */
 var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader\\";
+
+///////////////                  log to file or window                     ///////////////////
+var logToFile = true;
+var logToWindow = true;
+var logFile = variablePath + "TraderLogger.txt";
+
+function eventLogger(tempString) {
+    if (logToFile)
+        trader.fileAppend(logFile, trader.dateTimeString() + ": " + tempString);
+    if (logToWindow)
+        trader.log(tempString);
+}
+///////////////////////////////////////////////////////////////////
+
+function logger() {
+    trader.fileAppend(fileLoggerFile, fileLogger + " - " + trader.dateTimeString());
+}
 ////////// SCRIPT 2 /////////////////////////////////////////////
 var vverh = 0.7; // in%, for example, if there is 2%, and at the time running a script purchase price will be 100 BTC, then the purchase price 102 restarts the entire cycle //default 0.4
 //var orderss = 8; // value in the script 1 
@@ -32,10 +49,12 @@ var currencySecondary = "ETH";
 var lastTradeStatus = "";
 var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
 var temp = trader.fileReadAll(lastTradeStatusFile).toString().trim();
+eventLogger("temp: " + temp);
 if(temp.length > 0)
     lastTradeStatus = temp;
 else
     lastTradeStatus = "BUY";
+eventLogger("lastTradeStatus: " + lastTradeStatus);
 
 /////////////////////////////////////////////////////////////////
 ////////// SCRIPT 1 /////////////////////////////////////////////
@@ -150,22 +169,7 @@ var sumAskIdNumbers = 0;
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
-///////////////                  log to file or window                     ///////////////////
-var logToFile = true;
-var logToWindow = true;
-var logFile = variablePath + "TraderLogger.txt";
 
-function eventLogger(tempString) {
-    if (logToFile)
-        trader.fileAppend(logFile, trader.dateTimeString() + ": " + tempString);
-    if (logToWindow)
-        trader.log(tempString);
-}
-///////////////////////////////////////////////////////////////////
-
-function logger() {
-    trader.fileAppend(fileLoggerFile, fileLogger + " - " + trader.dateTimeString());
-}
 
 eventLogger("Start - Trader");
 
@@ -972,6 +976,7 @@ trader.on("LastMyBuyPrice").changed() {
     //trader.fileWrite(lastTradeStatusFile, "BUY");
     lastTradeStatus = "BUY";
     eventLogger(scriptName + ".BUY");
+    trader.fileWrite(lastTradeStatusFile, "BUY");
 
     checkIfAskCanBeMade();
 
