@@ -10,18 +10,17 @@ function eventLogger(tempString) {
     if (logToWindow)
         trader.log(tempString);
 }
-eventLogger("Restart TraderMain");
+eventLogger("///////////////////////        START - TRADER MAIN RESTART       ///////////////////");
 trader.groupStop("TraderLastBuy");
 trader.groupStop("TraderMain");
 trader.groupStop("Trader");
-trader.delay(5,"StartEverything()");
+trader.delay(5, "StartEverything()");
 
 
-function StartEverything()
-{
+function StartEverything() {
     var scriptName = "StartEverything()";
     eventLogger(scriptName + ".START");
-   
+
     trader.groupStart("TraderMain");
 
     eventLogger(scriptName + ".END");

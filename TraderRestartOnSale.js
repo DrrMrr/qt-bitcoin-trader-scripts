@@ -15,7 +15,7 @@ function eventLogger(tempString) {
 }
 ///////////////////////////////////////////////////////////////////
 
-var currencyPrimary = "BTC";
+var currencyPrimary = "USD";
 var currencySecondary = "ETH";
 
 function restartEverything() {
@@ -37,30 +37,29 @@ function restartEverything() {
 }
 
 
-trader.on("LastMyBuyPrice").changed()
-{
+trader.on("LastMyBuyPrice").changed() {
     var scriptName = "trader.on(LastMyBuyPrice).changed()";
     eventLogger(scriptName + ".START");
 
     trader.fileWrite(lastTradeStatusFile, "BUY");
     eventLogger(scriptName + ".BUY");
 
-     eventLogger(scriptName + ".END");
+    eventLogger(scriptName + ".END");
 }
 
 
-trader.on("LastMySellPrice").changed() {    
+trader.on("LastMySellPrice").changed() {
     var scriptName = "trader.on(LastMySellPrice).changed()";
     eventLogger(scriptName + ".START");
 
     trader.fileWrite(lastTradeStatusFile, "SELL");
 
-    trader.delay(5,"restartEverything()");
+    trader.delay(5, "restartEverything()");
     eventLogger(scriptName + ".END");
 }
 
 
-function emptyLogFiles() {     
+function emptyLogFiles() {
     var emptyLogFile = "";
     emptyLogFile = variablePath + "TraderLogger.txt";
     trader.fileWrite(emptyLogFile, "");
@@ -73,5 +72,5 @@ function emptyLogFiles() {
     emptyLogFile = variablePath + "TraderRestartOnSaleLogger.txt";
     trader.fileWrite(emptyLogFile, "");
     trader.fileWrite(lastTradeStatusFile, "SELL");
-    eventLogger("SELL");   
+    eventLogger("SELL");
 }

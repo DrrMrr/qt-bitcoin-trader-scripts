@@ -11,15 +11,20 @@ function eventLogger(tempString) {
     if (logToWindow)
         trader.log(tempString);
 }
+
+
+var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
+
+eventLogger("///////////////////////        START - TRADER MAIN       ///////////////////");
 ///////////////////////////////////////////////////////////////////
 lastMyBuyPrice();
-trader.timer(60, "lastMyBuyPrice()");
+trader.timer(57, "lastMyBuyPrice()");
 ///////////////////////////////////////////////////////////////////
-var currencyPrimary = "BTC";
+var currencyPrimary = "USD";
 var currencySecondary = "ETH";
 
 // in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
-var otstupFile = variablePath + "FirstBuy.txt";
+var otstupFile = variablePath + "firstBuyStep.txt";
 var otstup = parseFloat(trader.fileReadAll(otstupFile));
 var scriptName = "";
 eventLogger(scriptName + ".otstup: " + otstup);
@@ -40,7 +45,7 @@ var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit Ho
 eventLogger(scriptName + ".profit: " + profit);
 ///////////////////////////////////////////////////////////////////
 //Margin.txt
-var martinFile = variablePath + "Martin.txt";
+var martinFile = variablePath + "martinStep.txt";
 var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
 eventLogger(scriptName + ".martin: " + martin);
 ///////////////////////////////////////////////////////////////////
@@ -73,7 +78,7 @@ eventLogger(scriptName + ".Restart Trader");
 trader.groupStop("Trader");
 trader.groupStart("Trader");
 
-trader.timer(45, "restartEverything()");
+trader.timer(41, "restartEverything()");
 
 function restartEverything() {
     var scriptName = "restartEverything()";
@@ -82,11 +87,17 @@ function restartEverything() {
     var lastMySellPrice = trader.get("LastMySellPrice");
     eventLogger(scriptName + ".lastMySellPriceOld: " + lastMySellPrice);
     eventLogger(scriptName + ".lastMySellPrice: " + lastMySellPriceOld);
+    eventLogger(scriptName + ".openAsksCount: " + openAsksCount);
+    eventLogger(scriptName + ".openAsksCountOld: " + openAsksCountOld);
+
+    if (openAsksCount < openAsksCountOld) {
+        eventLogger(scriptName + ".STEP0");
+        restartTraderMainRestart();
+    }
+
     if (lastMySellPrice != lastMySellPriceOld) {
         eventLogger(scriptName + ".STEP1");
-        eventLogger(scriptName + ".Restart TraderMainRestart");
-        trader.groupStop("TraderMainRestart");
-        trader.groupStart("TraderMainRestart");
+        restartTraderMainRestart();
     } else {
         eventLogger(scriptName + ".STEP2");
         bidPrice = trader.get("BidPrice");
@@ -104,6 +115,7 @@ function restartEverything() {
         eventLogger(scriptName + ".openAsksCountOld: " + openAsksCountOld);
 
         if ((((openAsksCount < openAsksCountOld) || (openAsksCount == openAsksCountOld && lastMySellPriceOld != 0)) && lastMySellPriceOld != lastMySellPrice)) {
+            //if (((openAsksCount < openAsksCountOld) || (openAsksCount == openAsksCountOld && lastMySellPriceOld != 0)) && openAsksCount < openAsksCountOld) {
             eventLogger(scriptName + ".STEP3");
 
             //perekr += perekrDif;
@@ -118,10 +130,8 @@ function restartEverything() {
 
             lastMySellPriceOld = lastMySellPrice;
             trader.fileWrite(lastSaleFile, lastMySellPriceOld);
-            eventLogger(scriptName + ".Restart TraderMainRestart");
             trader.cancelBids(currencySecondary + currencyPrimary);
-            trader.groupStop("TraderMainRestart");
-            trader.groupStart("TraderMainRestart");
+            restartTraderMainRestart();
         }
 
 
@@ -143,9 +153,22 @@ function restartEverything() {
         }
         */
 
-        orders = openBidsCount;
-        openAsksCountOld = openAsksCount;
+        //orders = openBidsCount;        
     }
+    openAsksCountOld = openAsksCount;
+    eventLogger(scriptName + ".END");
+}
+
+function restartTraderMainRestart() {
+    var scriptName = "restartTraderMainRestart()";
+    eventLogger(scriptName + ".START");
+
+    trader.fileWrite(lastTradeStatusFile, "SELL");
+    trader.groupStop("TraderMainRestart");
+    trader.groupStop("Trader");
+    trader.groupStart("TraderMainRestart");
+    trader.groupStop("TraderMain");
+
     eventLogger(scriptName + ".END");
 }
 

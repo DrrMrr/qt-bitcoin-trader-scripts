@@ -21,13 +21,15 @@ var lastMyBuyPrice = trader.get("LastMyBuyPrice");
 var lastMyBuyPriceFile = variablePath + "lastMyBuyPrice.txt";
 var lastMySellPriceOld = trader.get("LastMySellPrice");
 var lastMySellPriceFile = variablePath + "lastMySellPrice.txt";
-trader.fileWrite(lastMyBuyPriceFile, lastMyBuyPrice);
-trader.fileWrite(lastMySellPriceFile, lastMySellPriceOld);
+if (lastMyBuyPrice > 0)
+    trader.fileWrite(lastMyBuyPriceFile, lastMyBuyPrice);
+if (lastMySellPriceOld > 0)
+    trader.fileWrite(lastMySellPriceFile, lastMySellPriceOld);
 eventLogger("lastMyBuyPrice: " + lastMyBuyPrice);
 eventLogger("lastMySellPrice: " + lastMySellPriceOld);
 
 ///////////		write currencySecondaryBalance	///////////////////
-var currencyPrimary = "BTC";
+var currencyPrimary = "USD";
 var currencySecondary = "ETH";
 var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
 var currencySecondaryBalance = trader.get("Balance", currencySecondary);
