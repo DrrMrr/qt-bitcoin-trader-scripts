@@ -96,14 +96,14 @@ var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBal
 var lastCurrencySecondaryBallance = 0;
 
 ///////////////////////////////////////////////////////////////////
-var profitInDollarsFile = variablePath + "profitInDollars.txt";
-var profitInDollars = parseFloat(trader.fileReadAll(profitInDollarsFile));
+var profitCurrencyPrimaryAmount = variablePath + "profitCurrencyPrimaryAmount.txt";
+var profitCurrencyPrimaryAmount = parseFloat(trader.fileReadAll(profitCurrencyPrimaryAmount));
 ///////////////////////////////////////////////////////////////////
 var profitInPercentageFile = variablePath + "profitInPercentage.txt";
 var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 ///////////////////////////////////////////////////////////////////
-var profitInDollarsFileCondition = variablePath + "profitInDollarsCondition.txt";
-var profitInDollarsCondition = trader.fileReadAll(profitInDollarsFileCondition).toString().trim();
+var profitCurrencyPrimaryAmountCondition = variablePath + "profitCurrencyPrimaryAmountCondition.txt";
+var profitCurrencyPrimaryAmountCondition = trader.fileReadAll(profitCurrencyPrimaryAmountCondition).toString().trim();
 ///////////////////////////////////////////////////////////////////
 var feeTakerFile = variablePath + "feeTaker.txt";
 var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
@@ -194,7 +194,7 @@ var primaryCurrencyValueOld = 0;
 var justStarted = true;
 var minValueAfterLastRestart = 100000000000;
 
-setNewRestartValue();
+//setNewRestartValue();
 makeAsk();
 /////////////////////////////////////////////////////////////////
 ////////// SCRIPT 2 /////////////////////////////////////////////
@@ -300,13 +300,19 @@ function setNewRestartValue() {
         eventLogger(scriptName + ".STEP1");
         minValueAfterLastRestart = bidPriceTemp;
 
-        if (profitInDollarsCondition == "true") {
+        /*
+        if (profitCurrencyPrimaryAmountCondition == "true") {
             eventLogger(scriptName + ".STEP2");
-            rest = bidPriceTemp + (profitInDollars * resetPrice);
-        } else {
-            eventLogger(scriptName + ".STEP3");
-            rest = bidPriceTemp + ((bidPriceTemp / 100 * profitInPercentage) * resetPrice);
+            rest = bidPriceTemp + (profitCurrencyPrimaryAmount * resetPrice);
         }
+        */
+        /* else {
+            eventLogger(scriptName + ".STEP3");
+            //rest = bidPriceTemp + ((bidPriceTemp / 100 * profitInPercentage) * resetPrice);
+            //TODO - calculate exact reset value
+            rest = bidPriceTemp + (bidPriceTemp * (resetPrice * 2/ 1000));
+        }
+        */
     }
     eventLogger(scriptName + ".rest: " + rest);
     eventLogger(scriptName + ".END");
@@ -343,7 +349,7 @@ function restartScript() {
     if (resetBidsEnabled == "true") // || (canMakeBid() && trader.get("OpenBidsCount") == 0)) 
     {
         eventLogger(scriptName + ".STEP1");
-        setNewRestartValue();
+        //setNewRestartValue();
 
         bidPrice = parseFloat(trader.fileReadAll(bidPriceFile));
         eventLogger(scriptName + ".bidPrice: " + bidPrice);
@@ -360,14 +366,14 @@ function restartScript() {
             eventLogger(scriptName + ".openBidsCount: " + openBidsCount);
             eventLogger(scriptName + ".orders: " + orders);
 
-            //lastTradeStatus = "SELL";
-            //eventLogger(scriptName + ".SELL");
-            //eventLogger(scriptName + ".Restart Trader");
-            //trader.groupStop("TraderMainRestart");
-            //trader.groupStart("TraderMainRestart");
+            lastTradeStatus = "SELL";
+            eventLogger(scriptName + ".SELL");
+            eventLogger(scriptName + ".Restart Trader");
+            trader.groupStop("TraderMainRestart");
+            trader.groupStart("TraderMainRestart");
             
-            trader.groupStop("Trader");
-            trader.groupStart("Trader");
+            //trader.groupStop("Trader");
+            //trader.groupStart("Trader");
 
 
             script1();
@@ -531,7 +537,7 @@ function canMakeBid() {
 
     //raznost = lastPrice * (raznostInPercentage / 100);
 
-    if (openBids == 0 && lastPrice < lastMyBuyPrice && (lastMyBuyPrice - lastPrice) > raznost)
+    if (openBidsCount == 0 && lastPrice < lastMyBuyPrice && (lastMyBuyPrice - lastPrice) > raznost)
     //if(openBids == 0 && lastMySellPrice > lastPrice && partValueSell > (lastPrice - lastMySellPrice) && lastMyBuyPrice > lastPrice && partValueSell > raznost)
     {
         eventLogger(scriptName + ".STEP6");
@@ -549,14 +555,15 @@ function canMakeBid() {
         return makeBid;
     }
 
-    /*
+    
     if (openBidsCount == 0) {
         eventLogger(scriptName + ".STEP8");
         makeBid = true;
+        //script1();
         eventLogger(scriptName + ".makeBid: " + makeBid);
         return makeBid;
     }
-    */
+    
 
     eventLogger(scriptName + ".makeBid: " + makeBid);
     eventLogger(scriptName + ".END");
@@ -794,16 +801,17 @@ function makeAsk() {
     if (makeSell) {
         var lastPrice = trader.get("LastPrice");
         var lastBuyPrice = trader.get("LastMyBuyPrice");
-        var buyFee = lastBuyPrice / 1000 * (feeTaker * 10);
+        var buyFee = lastBuyPrice / 1000 * (feeMaker * 1000);
         var absValue = Math.abs(lastBuyPrice - lastPrice);
 
         eventLogger(scriptName + ".lastBuyPrice: " + lastBuyPrice);
         eventLogger(scriptName + ".buyFee: " + buyFee);
         eventLogger(scriptName + ".absValue: " + absValue);
         eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
-        eventLogger(scriptName + ".profitInDollarsCondition: " + profitInDollarsCondition);
-        eventLogger(scriptName + ".profitInDollars: " + profitInDollars);
+        eventLogger(scriptName + ".profitCurrencyPrimaryAmountCondition: " + profitCurrencyPrimaryAmountCondition);
+        eventLogger(scriptName + ".profitCurrencyPrimaryAmount: " + profitCurrencyPrimaryAmount);
         eventLogger(scriptName + ".feeTaker: " + feeTaker);
+        eventLogger(scriptName + ".feeMaker: " + feeMaker);
 
 
         /////////////////////////////////////////////////////////////////////
@@ -820,18 +828,14 @@ function makeAsk() {
         eventLogger(scriptName + ".rightPrice: " + rightPrice);
 
         var openAsksCount = trader.get("OpenAsksCount");
-
-        feeMaker = 0.0015;
-        feeTaker = 0.0015;
-
-        var minAskValue = 0.0002; // 0.01 <=> 1%
-        var maxAskValue = 0.001;
+        var minAskValue = 0.001; // 0.01 <=> 1%
+        var maxAskValue = 0.002;
         var tempValue = (maxAskValue / minAskValue) - 1;
         var sellValueProfitInPercentage = 0;
         if (bidsDistributionEnabled == true)
             sellValueProfitInPercentage = minAskValue + openAsksCount * tempValue / (bidsDistributionMaxNumberOfBids * 1000);
         else {
-            if (profitInDollarsCondition == "true") {} else {
+            if (profitCurrencyPrimaryAmountCondition == "true") {} else {
                 sellValueProfitInPercentage = profitInPercentage;
             }
         }
@@ -854,8 +858,8 @@ function makeAsk() {
 
         // 0,00000375 BTC
         var primaryBalanceProfitValue = 0;
-        if (profitInDollarsCondition == "true")
-            primaryBalanceProfitValue = profitInDollars;
+        if (profitCurrencyPrimaryAmountCondition == "true")
+            primaryBalanceProfitValue = profitCurrencyPrimaryAmount;
         else
             primaryBalanceBuyFeeValue = lastCurrencyPrimaryBallanceBeforeBuy * sellValueProfitInPercentage;
         eventLogger(scriptName + ".primaryBalanceProfitValue: " + primaryBalanceProfitValue);
@@ -864,7 +868,7 @@ function makeAsk() {
         var primaryBalanceBuyFeeValue = 0;
 
 
-        primaryBalanceBuyFeeValue = lastCurrencyPrimaryBallanceBeforeBuy * feeTaker;
+        primaryBalanceBuyFeeValue = lastCurrencyPrimaryBallanceBeforeBuy * feeMaker;
         eventLogger(scriptName + ".primaryBalanceBuyFeeValue: " + primaryBalanceBuyFeeValue);
 
         // 0,00375375 BTC
@@ -873,7 +877,7 @@ function makeAsk() {
 
         // =(C26/((1-C18)*1000))*1000
         // 0,00375751 BTC
-        var currencyPrimaryTargetedBallance = currencyPrimaryTargetedBallanceWithNoSellFee / ((1 - feeMaker) * 1000) * 1000;
+        var currencyPrimaryTargetedBallance = currencyPrimaryTargetedBallanceWithNoSellFee / ((1 - feeTaker) * 1000) * 1000;
         eventLogger(scriptName + ".currencyPrimaryTargetedBallance: " + currencyPrimaryTargetedBallance);
 
         // 0,07522538
@@ -886,7 +890,39 @@ function makeAsk() {
         trader.fileWrite(lastMySellPriceFile, sellPrice);
         trader.fileWrite(lastTradeStatusFile, "BUY");
 
-        trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
+        if(raznostInPercentageCondition == "true")
+        {            
+            rest = lastBuyPrice + (sellPrice - lastBuyPrice) * resetPrice;
+        }
+
+        var checkNumberOfBids = 0;
+        eventLogger(scriptName + ".allBidsPriceEnabled: " + allBidsPriceEnabled);
+        eventLogger(scriptName + ".profitInPercentage: " + profitInPercentage);
+        eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
+        if(allBidsPriceEnabled == "true" && profitInPercentage > 0 && lastCurrencySecondaryBallance > allBidsPrice)
+        {
+            eventLogger(scriptName + ".DISTRIBUTE SELLS");
+            eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
+            eventLogger(scriptName + ".allBidsPrice: " + allBidsPrice);
+            checkNumberOfBids = lastCurrencySecondaryBallance / allBidsPrice;
+            eventLogger(scriptName + ".checkNumberOfBids: " + checkNumberOfBids);
+            checkNumberOfBids = Math.round(checkNumberOfBids);
+            eventLogger(scriptName + ".checkNumberOfBids: " + checkNumberOfBids);
+            if(checkNumberOfBids > 1)
+            {
+                var sellBuyDifference = sellPrice - lastBuyPrice;
+                var tempValue1 = sellBuyDifference * profitInPercentage * checkNumberOfBids;
+                eventLogger(scriptName + ".tempValue1: " + tempValue1);
+                var tempValue2 = tempValue1 * (checkNumberOfBids / 10);
+                eventLogger(scriptName + ".tempValue2: " + tempValue2);
+                sellPrice = lastBuyPrice + tempValue1 + tempValue2;
+                eventLogger(scriptName + ".sellPrice: " + sellPrice);
+                trader.sell(currencySecondary + currencyPrimary, allBidsPrice, sellPrice);    
+            }
+        }
+        if (checkNumberOfBids <= 1)
+            trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
+
         lastCurrencySecondaryBallanceFileWriter(0);
 
     }
