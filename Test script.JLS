@@ -1,0 +1,7 @@
+[JLScript]
+Version=1
+Name=Test script
+Notes=
+Encrypted=false
+LogRowsCount=500
+Data="var LastMySellPrice = 0;\nvar LastMySellPriceOld = trader.get(\"LastMySellPrice\");\nvar LastMyBuyPrice = 0;\nvar LastMyBuyPriceOld = trader.get(\"LastMyBuyPrice\");\n\ntrader.timer(1800, \"restartEverything()\");\n\nfunction restartEverything() {\n trader.log(\"CHECK\");\n    LastMySellPrice = trader.get(\"LastMySellPrice\");\n    LastMyBuyPrice = trader.get(\"LastMyBuyPrice\");\n    trader.log(\"LastMySellPrice: \" + LastMySellPrice);\n    trader.log(\"LastMySellPriceOld: \" + LastMySellPriceOld);\n    trader.log(\"LastMyBuyPrice: \" + LastMyBuyPrice);\n    trader.log(\"LastMyBuyPriceOld: \" + LastMyBuyPriceOld);\n    if(LastMySellPrice == LastMySellPriceOld && LastMyBuyPrice == LastMyBuyPriceOld)\n    {\n          trader.log(\"RESTART\");\n          trader.groupStop(\"TraderMainRestart\");\n          trader.groupStart(\"TraderMainRestart\"); \n    }\n    LastMySellPriceOld = LastMySellPrice;\n    LastMyBuyPriceOld = LastMyBuyPrice;\n\n    trader.log(\"LastMySellPrice: \" + LastMySellPrice);\n    trader.log(\"LastMySellPriceOld: \" + LastMySellPriceOld);\n    trader.log(\"LastMyBuyPrice: \" + LastMyBuyPrice);\n    trader.log(\"LastMyBuyPriceOld: \" + LastMyBuyPriceOld);\n}"

@@ -1,4 +1,4 @@
-var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader\\";
+var variablePath = "C:\\Users\\Damjan\\Documents\\GitHub\\qt-bitcoin-trader-scripts\\";
 ///////////////		log to file or window		///////////////////
 var logToFile = true;
 var logToWindow = true;

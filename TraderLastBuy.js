@@ -1,4 +1,4 @@
-var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader\\";
+var variablePath = "C:\\Users\\Damjan\\Documents\\GitHub\\qt-bitcoin-trader-scripts\\";
 ///////////////		log to file or window		///////////////////
 var logToFile = true;
 var logToWindow = true;
@@ -21,9 +21,9 @@ var lastMyBuyPrice = trader.get("LastMyBuyPrice");
 var lastMyBuyPriceFile = variablePath + "lastMyBuyPrice.txt";
 var lastMySellPriceOld = trader.get("LastMySellPrice");
 var lastMySellPriceFile = variablePath + "lastMySellPrice.txt";
-if (lastMyBuyPrice > 0)
+if(lastMyBuyPrice > 0)
     trader.fileWrite(lastMyBuyPriceFile, lastMyBuyPrice);
-if (lastMySellPriceOld > 0)
+if(lastMySellPriceOld > 0)
     trader.fileWrite(lastMySellPriceFile, lastMySellPriceOld);
 eventLogger("lastMyBuyPrice: " + lastMyBuyPrice);
 eventLogger("lastMySellPrice: " + lastMySellPriceOld);

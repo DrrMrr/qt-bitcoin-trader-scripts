@@ -1,4 +1,4 @@
-var variablePath = "D:\\Damjan\\Qsync\\Bitcoin\\QT Bitcoin Trader\\QTBitcointTrader\\";
+var variablePath = "C:\\Users\\Damjan\\Documents\\GitHub\\qt-bitcoin-trader-scripts\\";
 ///////////////		log to file or window		///////////////////
 var logToFile = true;
 var logToWindow = true;
@@ -19,6 +19,6 @@ function writeStats() {
     var volume = trader.get("10MinVolume");
     var scriptName = "writeStats()";
     //eventLogger(scriptName + ".START");    
-    eventLogger("," + price + "," + trader.get("10MinBuyDivSell") + "," + volume + "," + trader.get("AsksPrice", volume) + "," + trader.get("BidsPrice", volume));
+    eventLogger( "," + price + ","+ trader.get("10MinBuyDivSell")+","+volume +","+trader.get("AsksPrice",volume)+","+trader.get("BidsPrice",volume));
     //eventLogger(scriptName + ".END");
 }
