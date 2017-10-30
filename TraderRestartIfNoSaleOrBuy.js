@@ -36,85 +36,89 @@ var raznostInPercentageConditionFile = variablePath + "raznostInPercentageCondit
 var raznostInPercentageCondition = trader.fileReadAll(raznostInPercentageConditionFile).toString().trim();
 ///////////////////////////////////////////////////////////////////
 
-trader.timer(600, "restartEverything()");
+trader.timer(300, "restartEverything()");
 
 function restartEverything() {
     var scriptName = "restartEverything()";
     eventLogger(scriptName + ".START");
 
-    trader.log("CHECK.STEP1");
+    eventLogger(scriptName + ".STEP 0");
     lastMySellPrice = trader.get("LastMySellPrice");
     lastMyBuyPrice = trader.get("LastMyBuyPrice");
     lastPrice = trader.get("LastPrice");
-    trader.log("LastMySellPrice: " + lastMySellPrice);
-    trader.log("LastMySellPriceOld: " + lastMySellPriceOld);
-    trader.log("LastMyBuyPrice: " + lastMyBuyPrice);
-    trader.log("LastMyBuyPriceOld: " + lastMyBuyPriceOld);
+    eventLogger(scriptName + ".LastMySellPrice: " + lastMySellPrice);
+    eventLogger(scriptName + ".LastMySellPriceOld: " + lastMySellPriceOld);
+    eventLogger(scriptName + ".LastMyBuyPrice: " + lastMyBuyPrice);
+    eventLogger(scriptName + ".LastMyBuyPriceOld: " + lastMyBuyPriceOld);
     buyAbsDiff = Math.abs(lastMyBuyPrice - lastPrice);
     checkBuyAbsDiff();
 
     if (lastMySellPrice == lastMySellPriceOld && lastMyBuyPrice == lastMyBuyPriceOld) {
-        trader.log("resetBidsEnabled: " + resetBidsEnabled);
+        eventLogger(scriptName + ".resetBidsEnabled: " + resetBidsEnabled);
         if (resetBidsEnabled == "true") {
-            trader.log("STEP 1");
-            trader.log("restartScripts: " + restartScripts);
+            eventLogger(scriptName + ".STEP 1");
+            eventLogger(scriptName + ".restartScripts: " + restartScripts);
             if (restartScripts == true) {
-                trader.log("STEP 2");
-                trader.log("RESTART");
+                eventLogger(scriptName + ".STEP 2");
+                eeventLogger(scriptName + ".RESTART");
                 trader.groupStop("TraderMainRestart");
                 trader.groupStart("TraderMainRestart");
             }
         } else {
-            trader.log("STEP 3");
-            trader.log("RESTART");
+            eeventLogger(scriptName + ".STEP 3");
+            eventLogger(scriptName + ".RESTART");
             trader.groupStop("TraderMainRestart");
             trader.groupStart("TraderMainRestart");
         }
 
     }
-    trader.log("CHECK.STEP2");
     lastMySellPriceOld = lastMySellPrice;
     lastMyBuyPriceOld = lastMyBuyPrice;
 
-    trader.log("LastMySellPrice: " + lastMySellPrice);
-    trader.log("LastMySellPriceOld: " + lastMySellPriceOld);
-    trader.log("LastMyBuyPrice: " + lastMyBuyPrice);
-    trader.log("LastMyBuyPriceOld: " + lastMyBuyPriceOld);
+    eventLogger(scriptName + ".LastMySellPrice: " + lastMySellPrice);
+    eventLogger(scriptName + ".LastMySellPriceOld: " + lastMySellPriceOld);
+    eventLogger(scriptName + ".LastMyBuyPrice: " + lastMyBuyPrice);
+    eventLogger(scriptName + ".LastMyBuyPriceOld: " + lastMyBuyPriceOld);
 
     trader.groupStop("Test script");
     trader.groupStart("Test script");
     eventLogger(scriptName + ".STOP");
 }
 
-function restartEverything() {
-    var scriptName = "restartEverything()";
+function checkBuyAbsDiff() {
+    var scriptName = "checkBuyAbsDiff()";
     eventLogger(scriptName + ".START");
+    eventLogger(scriptName + ".lastMyBuyPrice: " + lastMyBuyPrice);
+    eventLogger(scriptName + ".lastPrice: " + lastPrice);
 
     if (raznostInPercentageCondition == "true") {
-        trader.log(scriptName + ".STEP");
+        eventLogger(scriptName + ".STEP 0");
         var tempDiff = 0;
+        var tempValue = 0;
         if (lastMyBuyPrice < lastPrice) {
-            trader.log(scriptName + ".STEP1.1");
-            tempDiff = Math.pow((lastMyBuyPrice / lastPrice), -1) - 1;
-            trader.log("tempDiff: " + tempDiff);
-            trader.log("resetPercentage: " + resetPercentage);
-            if (tempDiff > resetPercentage)
-            {
-                trader.log(scriptName + ".STEP1.2");
+            eventLogger(scriptName + ".STEP1.1");
+            tempValue = lastMyBuyPrice / lastPrice;
+            eventLogger(scriptName + ".tempValue: " + tempValue);
+            tempDiff = Math.pow(tempValue, -1) - 1;
+            eventLogger(scriptName + ".tempDiff: " + tempDiff);
+            eventLogger(scriptName + ".resetPercentage: " + resetPercentage);
+            if (tempDiff > resetPercentage) {
+                eventLogger(scriptName + ".STEP1.2");
                 restartScripts = true;
-                trader.log("restartScripts: " + restartScripts);
+                eventLogger(scriptName + ".restartScripts: " + restartScripts);
             }
-            
+
         } else {
-            trader.log(scriptName + ".STEP2.1");
-            tempDiff = Math.pow((lastPrice / lastMyBuyPrice), -1) - 1;
-            trader.log("tempDiff: " + tempDiff);
-            trader.log("raznostInPercentage: " + raznostInPercentage);
-            if (tempDiff > raznostInPercentage)
-            {
-                trader.log(scriptName + ".STEP2.2");
+            eventLogger(scriptName + ".STEP2.1");
+            tempValue = lastPrice / lastMyBuyPrice;
+            eventLogger(scriptName + ".tempValue: " + tempValue);
+            tempDiff = Math.pow(tempValue, -1) - 1;
+            eventLogger(scriptName + ".tempDiff: " + tempDiff);
+            eventLogger(scriptName + ".raznostInPercentage: " + raznostInPercentage);
+            if (tempDiff > raznostInPercentage) {
+                eventLogger(scriptName + ".STEP2.2");
                 restartScripts = true;
-                trader.log("restartScripts: " + restartScripts);
+                eventLogger(scriptName + ".restartScripts: " + restartScripts);
             }
         }
 

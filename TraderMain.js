@@ -21,7 +21,7 @@ lastMyBuyPrice();
 trader.timer(57, "lastMyBuyPrice()");
 ///////////////////////////////////////////////////////////////////
 var currencyPrimary = "USD";
-var currencySecondary = "BTC";
+var currencySecondary = "ETH";
 
 // in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
 var otstupFile = variablePath + "firstBuyStep.txt";
@@ -78,20 +78,30 @@ eventLogger(scriptName + ".Restart Trader");
 trader.groupStop("Trader");
 trader.groupStart("Trader");
 
-trader.timer(45, "restartEverything()");
+trader.timer(41, "restartEverything()");
 
 function restartEverything() {
     var scriptName = "restartEverything()";
     eventLogger(scriptName + ".START");
-
+    
+    openAsksCount = trader.get("OpenAsksCount");
     var lastMySellPrice = trader.get("LastMySellPrice");
     eventLogger(scriptName + ".lastMySellPriceOld: " + lastMySellPrice);
     eventLogger(scriptName + ".lastMySellPrice: " + lastMySellPriceOld);
+    eventLogger(scriptName + ".openAsksCount: " + openAsksCount);
+    eventLogger(scriptName + ".openAsksCountOld: " + openAsksCountOld);	
+	
+	if(openAsksCount < openAsksCountOld)
+	{		
+			eventLogger(scriptName + ".STEP0");
+			restartTraderMainRestart();
+	}
+	
     if (lastMySellPrice != lastMySellPriceOld) {
-        eventLogger(scriptName + ".STEP1");
-        eventLogger(scriptName + ".Restart TraderMainRestart");
-        trader.groupStop("TraderMainRestart");
-        trader.groupStart("TraderMainRestart");
+        eventLogger(scriptName + ".STEP1");        
+        restartTraderMainRestart();
+											  
+											   
     } else {
         eventLogger(scriptName + ".STEP2");
         bidPrice = trader.get("BidPrice");
@@ -122,14 +132,14 @@ function restartEverything() {
             //trader.log("VAL[restartEverything.otstup]: ", otstup);
             //otstup = 0;
             //trader.fileWrite(otstupFile,otstup);
-
-            trader.fileWrite(lastTradeStatusFile, "SELL");
+            
+														  
             lastMySellPriceOld = lastMySellPrice;
-            trader.fileWrite(lastSaleFile, lastMySellPriceOld);
-            eventLogger(scriptName + ".Restart TraderMainRestart");
+            trader.fileWrite(lastSaleFile, lastMySellPriceOld);            
+																   
             trader.cancelBids(currencySecondary + currencyPrimary);
-            trader.groupStop("TraderMainRestart");
-            trader.groupStart("TraderMainRestart");
+            restartTraderMainRestart();
+												   
         }
 
 
@@ -151,10 +161,25 @@ function restartEverything() {
         }
         */
 
-        orders = openBidsCount;
-        openAsksCountOld = openAsksCount;
+        //orders = openBidsCount;        
+										 
     }
+	openAsksCountOld = openAsksCount;
     eventLogger(scriptName + ".END");
+}
+
+function restartTraderMainRestart()
+{
+	var scriptName = "restartTraderMainRestart()";
+    eventLogger(scriptName + ".START");
+	
+	trader.fileWrite(lastTradeStatusFile, "SELL");
+	trader.groupStop("TraderMainRestart");
+	trader.groupStop("Trader");	
+    trader.groupStart("TraderMainRestart");
+	trader.groupStop("TraderMain");
+	
+	eventLogger(scriptName + ".END");
 }
 
 function lastMyBuyPrice() {
