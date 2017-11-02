@@ -16,7 +16,7 @@ function eventLogger(tempString) {
 ///////////////////////////////////////////////////////////////////
 
 var currencyPrimary = "USD";
-var currencySecondary = "ETH";
+var currencySecondary = "BTC";
 
 function restartEverything() {
 
@@ -53,7 +53,7 @@ trader.on("LastMySellPrice").changed() {
     var scriptName = "trader.on(LastMySellPrice).changed()";
     eventLogger(scriptName + ".START");
 
-    trader.fileWrite(lastTradeStatusFile, "SELL");
+    //trader.fileWrite(lastTradeStatusFile, "SELL");
 
     trader.delay(5,"restartEverything()");
     eventLogger(scriptName + ".END");

@@ -21,7 +21,7 @@ lastMyBuyPrice();
 trader.timer(57, "lastMyBuyPrice()");
 ///////////////////////////////////////////////////////////////////
 var currencyPrimary = "USD";
-var currencySecondary = "ETH";
+var currencySecondary = "BTC";
 
 // in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
 var otstupFile = variablePath + "firstBuyStep.txt";
@@ -172,11 +172,16 @@ function restartTraderMainRestart()
 {
 	var scriptName = "restartTraderMainRestart()";
     eventLogger(scriptName + ".START");
-	
-	trader.fileWrite(lastTradeStatusFile, "SELL");
-	trader.groupStop("TraderMainRestart");
-	trader.groupStop("Trader");	
+    
+    eventLogger(scriptName + ".SELL.lastTradeStatusFile");
+    trader.fileWrite(lastTradeStatusFile, "SELL");
+    eventLogger(scriptName + ".STOP.TraderMainRestart");
+    trader.groupStop("TraderMainRestart");
+    eventLogger(scriptName + ".STOP.Trader");
+    trader.groupStop("Trader");
+    eventLogger(scriptName + ".START.TraderMainRestart");	
     trader.groupStart("TraderMainRestart");
+    eventLogger(scriptName + ".Start.TraderMain");
 	trader.groupStop("TraderMain");
 	
 	eventLogger(scriptName + ".END");

@@ -30,7 +30,7 @@ eventLogger("lastMySellPrice: " + lastMySellPriceOld);
 
 ///////////		write currencySecondaryBalance	///////////////////
 var currencyPrimary = "USD";
-var currencySecondary = "ETH";
+var currencySecondary = "BTC";
 var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
 var currencySecondaryBalance = trader.get("Balance", currencySecondary);
 eventLogger("currencySecondaryBalance: " + currencySecondaryBalance);

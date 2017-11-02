@@ -60,13 +60,13 @@ function restartEverything() {
             eventLogger(scriptName + ".restartScripts: " + restartScripts);
             if (restartScripts == true) {
                 eventLogger(scriptName + ".STEP 2");
-                eeventLogger(scriptName + ".RESTART");
+                eventLogger(scriptName + ".RESTART -----------------------------------------");
                 trader.groupStop("TraderMainRestart");
                 trader.groupStart("TraderMainRestart");
             }
         } else {
-            eeventLogger(scriptName + ".STEP 3");
-            eventLogger(scriptName + ".RESTART");
+            eventLogger(scriptName + ".STEP 3");
+            eventLogger(scriptName + ".RESTART -----------------------------------------");
             trader.groupStop("TraderMainRestart");
             trader.groupStart("TraderMainRestart");
         }

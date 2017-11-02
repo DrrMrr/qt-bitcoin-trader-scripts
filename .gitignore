@@ -8,7 +8,9 @@ TraderLogger.txt
 lastSale.txt
 lastMySellPrice.txt
 lastMyBuyPrice.txt
-lastSale.txt
-bidPrice.txt
 lastCurrencySecondaryBallance.txt
 TraderRestartIfNoSaleOrBuy.txt
+bidPrice.txt
+lastTradeStatusFile.txt
+lastCurrencySecondaryBallance.txt
+lastCurrencyPrimaryBallance.txt
