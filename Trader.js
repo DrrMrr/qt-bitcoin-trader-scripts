@@ -137,7 +137,7 @@ var allBidsPriceEnabledFile = variablePath + "allBidsPriceEnabled.txt";
 var allBidsPriceEnabled = trader.fileReadAll(allBidsPriceEnabledFile).toString().trim();
 ///////////////////////////////////////////////////////////////////
 var currencyPrimaryKeepAmountFixedValue = 0;
-var currencySecondaryKeepAmountFixedValue = 0.1;
+var currencySecondaryKeepAmountFixedValue = 0.15;
 
 
 ///////////////////////////////////////////////////////////////////
@@ -636,7 +636,8 @@ function makeBids() {
 	eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
     eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
 
-    if (currencyPrimaryBalance >= currencyPrimaryKeepAmountFixedValue && currencySecondaryBalance > currencySecondaryKeepAmountFixedValue) {
+    //TODO - currencySecondaryKeepAmountFixedValue & currencyPrimaryKeepAmountFixedValue make tolerance 1%
+    if (currencyPrimaryBalance >= (currencyPrimaryKeepAmountFixedValue * 0.99) && currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99) ) {
         if (canMakeBid()) {
             eventLogger(scriptName + ".STEP1");
             var openBidsCount = trader.get("OpenBidsCount");
@@ -786,10 +787,12 @@ function makeAsk() {
         eventLogger(scriptName + ".STEP 0.1");
         lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
         if (lastCurrencySecondaryBallance == 0)
-            lastCurrencyPrimaryBallance = trader.get("Balance", currencySecondary);
+            lastCurrencySecondaryBallance = trader.get("Balance", currencySecondary);
 
+        eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
         var tempValue = lastCurrencySecondaryBallance - currencySecondaryKeepAmountFixedValue;
 
+        eventLogger(scriptName + ".tempValue: " + tempValue);
         if (tempValue > 0) {
             eventLogger(scriptName + ".STEP 0.2");
             lastCurrencySecondaryBallance = tempValue;
@@ -914,7 +917,8 @@ function makeAsk() {
             if(checkNumberOfBids > 1)
             {
                 var sellBuyDifference = sellPrice - lastBuyPrice;
-                //raznostInPercentage
+                eventLogger(scriptName + ".sellBuyDifference: " + sellBuyDifference);
+                eventLogger(scriptName + ".raznostInPercentage: " + raznostInPercentage);
                 var tempValue1 = 0;
                 if(profitInPercentage > 0)
                     tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));
@@ -925,11 +929,51 @@ function makeAsk() {
                 eventLogger(scriptName + ".tempValue2: " + tempValue2);
                 sellPrice = lastBuyPrice + tempValue1 + tempValue2;
                 eventLogger(scriptName + ".sellPrice: " + sellPrice);
-                trader.sell(currencySecondary + currencyPrimary, allBidsPrice, sellPrice);    
+				if(currencySecondaryKeepAmountFixedValue > 0)
+				{
+					eventLogger(scriptName + ".STEP 2.1");
+					if(lastCurrencySecondaryBallance - allBidsPrice < currencySecondaryKeepAmountFixedValue) 
+					{
+						eventLogger(scriptName + ".STEP 2.2");
+                        var calc = allBidsPrice * (1-(feeTaker));
+                        eventLogger(scriptName + ".calc: " + calc);
+						trader.sell(currencySecondary + currencyPrimary, calc , sellPrice);    
+					}
+					else
+					{
+						eventLogger(scriptName + ".STEP 2.3");
+						trader.sell(currencySecondary + currencyPrimary, allBidsPrice, sellPrice);    
+					}
+				}
+				else
+					trader.sell(currencySecondary + currencyPrimary, allBidsPrice, sellPrice);    
             }
         }
         if (checkNumberOfBids <= 1)
-            trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
+		{
+			if(currencySecondaryKeepAmountFixedValue > 0)
+				{
+					eventLogger(scriptName + ".STEP 3.1");
+					if(lastCurrencySecondaryBallance - lastCurrencySecondaryBallance < currencySecondaryKeepAmountFixedValue) 
+					{
+						eventLogger(scriptName + ".STEP 3.2");
+                        var calc = lastCurrencySecondaryBallance * (1-(feeTaker));
+                        eventLogger(scriptName + ".calc: " + calc);
+						trader.sell(currencySecondary + currencyPrimary, calc, sellPrice);
+					}
+					else
+					{
+						eventLogger(scriptName + ".STEP 3.3");
+						trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
+					}
+				}
+				else
+				{
+					eventLogger(scriptName + ".STEP 3.4");
+					trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
+				}
+		}
+            
 
         lastCurrencySecondaryBallanceFileWriter(0);
 
