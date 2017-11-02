@@ -138,6 +138,7 @@ var allBidsPriceEnabled = trader.fileReadAll(allBidsPriceEnabledFile).toString()
 ///////////////////////////////////////////////////////////////////
 var currencyPrimaryKeepAmountFixedValue = 0;
 var currencySecondaryKeepAmountFixedValue = 0.15;
+var minBidAmount = 0.04;
 
 
 ///////////////////////////////////////////////////////////////////
@@ -798,6 +799,13 @@ function makeAsk() {
             lastCurrencySecondaryBallance = tempValue;
             makeSell = true;
         }
+		
+		if((lastCurrencySecondaryBallance - currencySecondaryKeepAmountFixedValue - minBidAmount) < 0)
+		{
+			eventLogger(scriptName + ".STEP 0.3");
+			makeSell = false;
+		}
+			
     } else {
         eventLogger(scriptName + ".STEP 0.3");
         lastCurrencySecondaryBallance = lastCurrencySecondaryBallance;
