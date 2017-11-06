@@ -172,7 +172,7 @@ function restartTraderMainRestart()
 {
 	var scriptName = "restartTraderMainRestart()";
     eventLogger(scriptName + ".START");
-    
+    eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
     eventLogger(scriptName + ".SELL.lastTradeStatusFile");
     trader.fileWrite(lastTradeStatusFile, "SELL");
     eventLogger(scriptName + ".STOP.TraderMainRestart");

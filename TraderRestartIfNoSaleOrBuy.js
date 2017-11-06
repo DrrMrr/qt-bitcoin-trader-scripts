@@ -60,14 +60,18 @@ function restartEverything() {
             eventLogger(scriptName + ".restartScripts: " + restartScripts);
             if (restartScripts == true) {
                 eventLogger(scriptName + ".STEP 2");
-                eventLogger(scriptName + ".RESTART -----------------------------------------");
+                eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
                 trader.groupStop("TraderMainRestart");
+                trader.groupStop("TraderMain");
+                trader.groupStop("Trader");
                 trader.groupStart("TraderMainRestart");
             }
         } else {
             eventLogger(scriptName + ".STEP 3");
-            eventLogger(scriptName + ".RESTART -----------------------------------------");
+            eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
             trader.groupStop("TraderMainRestart");
+            trader.groupStop("TraderMain");
+            trader.groupStop("Trader");
             trader.groupStart("TraderMainRestart");
         }
 
@@ -79,9 +83,7 @@ function restartEverything() {
     eventLogger(scriptName + ".LastMySellPriceOld: " + lastMySellPriceOld);
     eventLogger(scriptName + ".LastMyBuyPrice: " + lastMyBuyPrice);
     eventLogger(scriptName + ".LastMyBuyPriceOld: " + lastMyBuyPriceOld);
-
-    trader.groupStop("Test script");
-    trader.groupStart("Test script");
+    
     eventLogger(scriptName + ".STOP");
 }
 
