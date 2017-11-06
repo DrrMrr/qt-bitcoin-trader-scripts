@@ -850,7 +850,7 @@ function makeAsk() {
     eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
     eventLogger(scriptName + ".minBidAmount: " + minBidAmount);
     eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue > (lastCurrencySecondaryBallance - minBidAmount))" + currencySecondaryKeepAmountFixedValue > (lastCurrencySecondaryBallance - minBidAmount));
-    if (makeSell == true && currencySecondaryKeepAmountFixedValue > (lastCurrencySecondaryBallance - minBidAmount)) {
+    if (makeSell == true && currencySecondaryKeepAmountFixedValue == 0 || ((currencySecondaryKeepAmountFixedValue > (lastCurrencySecondaryBallance - minBidAmount) && currencySecondaryKeepAmountFixedValue != 0))) {
         var lastPrice = trader.get("LastPrice");
         var lastBuyPrice = trader.get("LastMyBuyPrice");
         var buyFee = lastBuyPrice / 1000 * (feeMaker * 1000);
