@@ -34,3 +34,4 @@ var currencySecondary = "BTC";
 var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
 var currencySecondaryBalance = trader.get("Balance", currencySecondary);
 eventLogger("currencySecondaryBalance: " + currencySecondaryBalance);
+trader.fileWrite(lastCurrencySecondaryBallanceFile, currencySecondaryBalance);
