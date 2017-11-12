@@ -136,8 +136,15 @@ var allBidsPrice = parseFloat(trader.fileReadAll(allBidsPriceFile));
 var allBidsPriceEnabledFile = variablePath + "allBidsPriceEnabled.txt";
 var allBidsPriceEnabled = trader.fileReadAll(allBidsPriceEnabledFile).toString().trim();
 ///////////////////////////////////////////////////////////////////
-var currencyPrimaryKeepAmountFixedValue = 0;
-var currencySecondaryKeepAmountFixedValue = 0.15;
+//var currencyPrimaryKeepAmountFixedValue = 0;
+//var currencySecondaryKeepAmountFixedValue = 0.15;
+///////////////////////////////////////////////////////////////////
+var currencyPrimaryKeepAmountFixedValueFile = variablePath + "currencyPrimaryKeepAmountFixedValue.txt";
+var currencyPrimaryKeepAmountFixedValue = parseFloat(trader.fileReadAll(currencyPrimaryKeepAmountFixedValueFile));
+///////////////////////////////////////////////////////////////////
+var currencySecondaryKeepAmountFixedValueFile = variablePath + "currencySecondaryKeepAmountFixedValue.txt";
+var currencySecondaryKeepAmountFixedValue = parseFloat(trader.fileReadAll(currencySecondaryKeepAmountFixedValueFile));
+///////////////////////////////////////////////////////////////////
 var minBidAmount = 0.004;
 
 var lastSellPriceGenerated = 0;
@@ -200,8 +207,7 @@ var minValueAfterLastRestart = 100000000000;
 var openAsksCountCheck = trader.get("OpenAsksCount");
 var openAsksCountCheckOld = openAsksCountCheck;
 
-function openAsksCountCheckFun()
-{
+function openAsksCountCheckFun() {
     var scriptName = "openAsksCountCheckFun()";
     eventLogger(scriptName + ".START");
 
@@ -209,8 +215,7 @@ function openAsksCountCheckFun()
     eventLogger(scriptName + ".openAsksCountCheck: " + openAsksCountCheck);
     eventLogger(scriptName + ".openAsksCountCheckOld: " + openAsksCountCheckOld);
 
-    if(openAsksCountCheck < openAsksCountCheckOld)
-	{
+    if (openAsksCountCheck < openAsksCountCheckOld) {
         trader.fileWrite(lastTradeStatusFile, "SELL");
     }
     openAsksCountCheckOld = openAsksCountCheck;
@@ -220,8 +225,7 @@ function openAsksCountCheckFun()
 var openBidsCountCheck = trader.get("OpenBidsCount");
 var openBidsCountCheckOld = openBidsCountCheck;
 
-function openBidsCountCheckFun()
-{
+function openBidsCountCheckFun() {
     var scriptName = "openBidsCountCheckFun()";
     eventLogger(scriptName + ".START");
 
@@ -229,8 +233,7 @@ function openBidsCountCheckFun()
     eventLogger(scriptName + ".openBidsCountCheck: " + openBidsCountCheck);
     eventLogger(scriptName + ".openBidsCountCheckOld: " + openBidsCountCheckOld);
 
-    if(openBidsCountCheck != openBidsCountCheckOld)
-	{
+    if (openBidsCountCheck != openBidsCountCheckOld) {
         trader.fileWrite(lastTradeStatusFile, "BUY");
     }
     openBidsCountCheckOld = openBidsCountCheck;
@@ -324,7 +327,7 @@ function checkIfFirstBuyWasExecuted() {
 
     //if (((ordersOriginalValue == openBids || openBids == 0) || (firstBuyChecked == false && ordersOriginalValue != openBids && lastMyBuyPriceOriginal == lastMyBuyPrice)) && otstupOriginal == 0) {
     if ((ordersOriginalValue == openBids || openBids == 0) && otstupOriginal == 0 && (lastPrice - raznost) <= lastMyBuyPrice) {
-        eventLogger(scriptName + ".Restart TraderMainRestart");        
+        eventLogger(scriptName + ".Restart TraderMainRestart");
         eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
         restartAll();
     }
@@ -345,20 +348,18 @@ function setNewRestartValue() {
     if (bidPriceTemp < minValueAfterLastRestart) {
         eventLogger(scriptName + ".STEP1");
         minValueAfterLastRestart = bidPriceTemp;
-        
-        
+
+
         if (profitCurrencyPrimaryAmountCondition == "true") {
             eventLogger(scriptName + ".STEP2");
             rest = bidPriceTemp + (profitCurrencyPrimaryAmount * resetPrice);
-        }
-        
-        else {
+        } else {
             eventLogger(scriptName + ".STEP3");
             //rest = bidPriceTemp + ((bidPriceTemp / 100 * profitInPercentage) * resetPrice);
             //TODO - calculate exact reset value
-            rest = bidPriceTemp + (bidPriceTemp * (resetPrice * 2/ 1000));
+            rest = bidPriceTemp + (bidPriceTemp * (resetPrice * 2 / 1000));
         }
-        
+
     }
     eventLogger(scriptName + ".rest: " + rest);
     eventLogger(scriptName + ".END");
@@ -421,7 +422,8 @@ function restartScript() {
     eventLogger(scriptName + ".STEP3");
     eventLogger(scriptName + ".END");
 }
-
+var asksRunning = false;
+var bidsRunning = false;
 /////////////////////////////////////////////////////////////////
 ////////// SCRIPT 1 /////////////////////////////////////////////
 
@@ -454,8 +456,7 @@ function script1() {
     eventLogger(scriptName + ".prceni: " + prceni);
     // Pervaluteif = 100000 
     //trader.cancelOrders(currencySecondary + currencyPrimary);    
-    if(openBids > ordersOriginalValue)
-    {
+    if (openBids > ordersOriginalValue) {
         trader.cancelBids(currencySecondary + currencyPrimary);
     }
     pric = bidPrice * otstup;
@@ -480,7 +481,7 @@ function script1() {
     eventLogger(scriptName + ".raznost: " + raznost);
 
     trader.timer(31, "makeBids()");
-    trader.timer(10, "checkIfAskCanBeMade()");
+    trader.timer(25, "checkIfAskCanBeMade()");
     pperv = 0;
     pvtorvraz = 0;
     trader.delay(20, "aaa()");
@@ -535,12 +536,12 @@ function canMakeBid() {
     //////////////////////////////////////////////////////////////////////
     var openAsksCount = trader.get("OpenAsksCount");
     // if there are no open asks
-    if (openAsksCount == 0) {
+    /*if (openAsksCount == 0) {
         eventLogger(scriptName + ".STEP2");
         makeBid = true;
         eventLogger(scriptName + ".makeBid: " + makeBid);
         return makeBid;
-    }
+    }*/
     //////////////////////////////////////////////////////////////////////
     var lastPrice = trader.get("LastPrice");
     var diffLastMySellPriceLastPrice = Math.abs(lastMySellPrice - lastPrice);
@@ -690,135 +691,147 @@ function getDistributedBid(bidNumber) {
 }
 
 function makeBids() {
+
     var scriptName = "makeBids()";
     eventLogger(scriptName + ".START");
 
-    var currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
-    var currencySecondaryBalance = trader.get("Balance", currencySecondary);
+    if (asksRunning == false) {
+        bidsRunning = true;
+        var currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
+        var currencySecondaryBalance = trader.get("Balance", currencySecondary);
 
-    eventLogger(scriptName + ".currencyPrimaryKeepAmountFixedValue: " + currencyPrimaryKeepAmountFixedValue);
-    eventLogger(scriptName + ".currencyPrimaryBalance: " + currencyPrimaryBalance);
-    eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
-    eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
+        eventLogger(scriptName + ".currencyPrimaryKeepAmountFixedValue: " + currencyPrimaryKeepAmountFixedValue);
+        eventLogger(scriptName + ".currencyPrimaryBalance: " + currencyPrimaryBalance);
+        eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
+        eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
 
-    //TODO - currencySecondaryKeepAmountFixedValue & currencyPrimaryKeepAmountFixedValue make tolerance 1%
-    if (currencyPrimaryBalance >= (currencyPrimaryKeepAmountFixedValue * 0.99) || currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99)) {
-        if (canMakeBid()) {
-            eventLogger(scriptName + ".STEP1");
-            var openBidsCount = trader.get("OpenBidsCount");
+        //TODO - currencySecondaryKeepAmountFixedValue & currencyPrimaryKeepAmountFixedValue make tolerance 1%
+        //if (currencyPrimaryBalance >= (currencyPrimaryKeepAmountFixedValue * 0.99) || currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99)) {
+        if (currencyPrimaryBalance >= (currencyPrimaryKeepAmountFixedValue * 0.99) || currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99)) {
+            if (canMakeBid()) {
+                eventLogger(scriptName + ".STEP1");
+                var openBidsCount = trader.get("OpenBidsCount");
 
-            if (ordersOriginalValue == openBidsCount) {
-                eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
-                restartAll();
-            }
-            //cancel previous bids
-            if (openBidsCount != 0) {
-                eventLogger(scriptName + "./#/#/#/#////////////   CANCEL BIDS   ////////////////////");
-                trader.cancelBids(currencySecondary + currencyPrimary);
-            }
-
-
-            var all = currencyPrimaryBalance * depo;
-            eventLogger(scriptName + ".depo: " + depo);
-            eventLogger(scriptName + ".all: " + all);
-
-            var yyy = 0;
-            eventLogger(scriptName + ".STEP2");
-            for (var i = 0; i < orders;) {
-                yyy = yyy + Math.pow(martin, i);
-                eventLogger(scriptName + ".|||||||||||||||||||||||||||||||||||||||||||");
-                eventLogger(scriptName + ".i: " + i);
-                eventLogger(scriptName + ".martin: " + martin);
-                eventLogger(scriptName + ".Math.pow(martin, i): " + Math.pow(martin, i));
-                eventLogger(scriptName + ".yyy: " + yyy);
-                i = i + 1;
-            }
-
-            eventLogger(scriptName + ".STEP3");
-            var amount = all / yyy;
-            var firstBidPriceDiff = 0;
-            eventLogger(scriptName + ".amount: " + amount);
-            eventLogger(scriptName + ".firstBidPriceDiff: " + firstBidPriceDiff);
-            eventLogger(scriptName + ".orders: " + orders);
-            eventLogger(scriptName + ".STEP4");
-
-            for (var i = 0; i < orders;) {
-                eventLogger(scriptName + ".-------------------------------------------");
-                eventLogger(scriptName + ".i: " + i);
-                eventLogger(scriptName + ".allBidsPriceEnabled: " + allBidsPriceEnabled);
-                eventLogger(scriptName + ".allBidsPrice: " + allBidsPrice);
-                eventLogger(scriptName + ".amount: " + amount);
-
-                if (allBidsPriceEnabled == "true") {
-                    eventLogger(scriptName + ".STEP5");
-                    amount = allBidsPrice;
-                } else if (i == 0 && firstBidPriceEnabled == "true") {
-                    eventLogger(scriptName + ".STEP6");
-                    if (firstBidPrice < amount) {
-                        eventLogger(scriptName + ".STEP7");
-                        firstBidPriceDiff = amount - firstBidPrice;
-                        amount = firstBidPrice;
-                    }
+                if (ordersOriginalValue == openBidsCount) {
+                    eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
+                    restartAll();
+                }
+                //cancel previous bids
+                if (openBidsCount != 0) {
+                    eventLogger(scriptName + "./#/#/#/#////////////   CANCEL BIDS   ////////////////////");
+                    trader.cancelBids(currencySecondary + currencyPrimary);
                 }
 
-                if (bidsDistributionEnabled == "true") {
-                    eventLogger(scriptName + ".STEP8");
+
+                var all = currencyPrimaryBalance * depo;
+                eventLogger(scriptName + ".depo: " + depo);
+                eventLogger(scriptName + ".all: " + all);
+
+                var yyy = 0;
+                eventLogger(scriptName + ".STEP2");
+                for (var i = 0; i < orders;) {
+                    yyy = yyy + Math.pow(martin, i);
+                    eventLogger(scriptName + ".|||||||||||||||||||||||||||||||||||||||||||");
                     eventLogger(scriptName + ".i: " + i);
-                    var bidTemp = getDistributedBid(i);
-                    if (bidTemp != 0) {
-                        eventLogger(scriptName + ".STEP9");
-                        eventLogger(scriptName + ".bidTemp: " + bidTemp);
-                        amount = bidTemp;
+                    eventLogger(scriptName + ".martin: " + martin);
+                    eventLogger(scriptName + ".Math.pow(martin, i): " + Math.pow(martin, i));
+                    eventLogger(scriptName + ".yyy: " + yyy);
+                    i = i + 1;
+                }
 
+                eventLogger(scriptName + ".STEP3");
+                var amount = all / yyy;
+                var firstBidPriceDiff = 0;
+                eventLogger(scriptName + ".amount: " + amount);
+                eventLogger(scriptName + ".firstBidPriceDiff: " + firstBidPriceDiff);
+                eventLogger(scriptName + ".orders: " + orders);
+                eventLogger(scriptName + ".STEP4");
+
+                for (var i = 0; i < orders;) {
+                    eventLogger(scriptName + ".-------------------------------------------");
+                    eventLogger(scriptName + ".i: " + i);
+                    eventLogger(scriptName + ".allBidsPriceEnabled: " + allBidsPriceEnabled);
+                    eventLogger(scriptName + ".allBidsPrice: " + allBidsPrice);
+                    eventLogger(scriptName + ".amount: " + amount);
+
+                    if (allBidsPriceEnabled == "true") {
+                        eventLogger(scriptName + ".STEP5");
+                        amount = allBidsPrice;
+                    } else if (i == 0 && firstBidPriceEnabled == "true") {
+                        eventLogger(scriptName + ".STEP6");
+                        if (firstBidPrice < amount) {
+                            eventLogger(scriptName + ".STEP7");
+                            firstBidPriceDiff = amount - firstBidPrice;
+                            amount = firstBidPrice;
+                        }
                     }
+
+                    if (bidsDistributionEnabled == "true") {
+                        eventLogger(scriptName + ".STEP8");
+                        eventLogger(scriptName + ".i: " + i);
+                        var bidTemp = getDistributedBid(i);
+                        if (bidTemp != 0) {
+                            eventLogger(scriptName + ".STEP9");
+                            eventLogger(scriptName + ".bidTemp: " + bidTemp);
+                            amount = bidTemp;
+
+                        }
+                    }
+                    eventLogger(scriptName + ".amount: " + amount);
+                    eventLogger(scriptName + ".price: " + price);
+
+                    if ((allBidsPriceEnabled == "true") || (i == 1 && firstBidPriceEnabled == "true") || (bidsDistributionEnabled == "true")) {
+                        eventLogger(scriptName + ".STEP10");
+                        trader.buy(currencySecondary + currencyPrimary, amount, price);
+                    } else {
+                        eventLogger(scriptName + ".STEP11");
+                        trader.buy(currencySecondary + currencyPrimary, amount / price, price);
+                    }
+
+                    eventLogger(scriptName + ".STEP12");
+                    //myVolumes[i] = amount;
+                    //myPrices[i] = price;
+                    price = price - raznost;
+
+                    amount = amount * martin;
+                    eventLogger(scriptName + ".amount: " + amount);
+                    eventLogger(scriptName + ".price: " + price);
+
+                    i = i + 1;
                 }
-                eventLogger(scriptName + ".amount: " + amount);
-                eventLogger(scriptName + ".price: " + price);
-
-                if ((allBidsPriceEnabled == "true") || (i == 1 && firstBidPriceEnabled == "true") || (bidsDistributionEnabled == "true")) {
-                    eventLogger(scriptName + ".STEP10");
-                    trader.buy(currencySecondary + currencyPrimary, amount, price);
-                } else {
-                    eventLogger(scriptName + ".STEP11");
-                    trader.buy(currencySecondary + currencyPrimary, amount / price, price);
-                }
-
-                eventLogger(scriptName + ".STEP12");
-                //myVolumes[i] = amount;
-                //myPrices[i] = price;
-                price = price - raznost;
-
-                amount = amount * martin;
-                eventLogger(scriptName + ".amount: " + amount);
-                eventLogger(scriptName + ".price: " + price);
-
-                i = i + 1;
             }
         }
     }
     eventLogger(scriptName + ".END");
+    bidsRunning = false;
 }
 
 function checkIfAskCanBeMade() {
-    var scriptName = "checkIfAskCanBeMade()";
-    eventLogger(scriptName + ".START");
+    if (bidsRunning == false) {
+        asksRunning = true;
+        var scriptName = "checkIfAskCanBeMade()";
+        eventLogger(scriptName + ".START");
 
-    eventLogger(scriptName + ".Read secondary balance");
-    var currencySecondaryBalance = trader.get("Balance", currencySecondary);
-    eventLogger(scriptName + ".Read last secondary balance from file");
-    lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
-    eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
-    eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
-    eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
+        eventLogger(scriptName + ".Read secondary balance");
+        var currencySecondaryBalance = trader.get("Balance", currencySecondary);
+        eventLogger(scriptName + ".Read last secondary balance from file");
+        lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
+        eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
+        eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
+        eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
 
-    //TODO - currencySecondaryKeepAmountFixedValue - not o.k.!!!!
-    if (lastCurrencySecondaryBallance > 0.001 || currencySecondaryBalance > 0.001) {
-        eventLogger(scriptName + ".STEP1");
-        makeAsk();
+        //TODO - currencySecondaryKeepAmountFixedValue - not o.k.!!!!
+        if (lastCurrencySecondaryBallance > 0.001 || currencySecondaryBalance > 0.001) {
+            eventLogger(scriptName + ".STEP1");
+            if (currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99) && (currencySecondaryBalance - currencySecondaryKeepAmountFixedValue) >= minBidAmount) {
+                eventLogger(scriptName + ".STEP2");
+                makeAsk();
+            }
+        }
     }
-
     eventLogger(scriptName + ".STEP2");
     eventLogger(scriptName + ".END");
+    asksRunning = false;
 }
 
 function cancelAsks() {
@@ -1002,15 +1015,15 @@ function makeAsk() {
                 var tempValue1 = 0;
                 var tempValue4 = 0;
                 tempValue4 = lastBuyPrice;
-                
+
                 eventLogger(scriptName + ". tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage /100) * checkNumberOfBids * (1 * 1.05)");
-                eventLogger(scriptName + ". tempValue4 = " + tempValue4 + " + " + tempValue4  + " * (" + raznostInPercentage + " /100) * " + checkNumberOfBids  + " * (1 * 1.05)");
+                eventLogger(scriptName + ". tempValue4 = " + tempValue4 + " + " + tempValue4 + " * (" + raznostInPercentage + " /100) * " + checkNumberOfBids + " * (1 * 1.05)");
                 if (profitInPercentage > 0) {
                     //tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));
                     //eventLogger(scriptName + ".raznostInPercentage: tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));");
                     //eventLogger(scriptName + ".raznostInPercentage: " + tempValue1 + " = " + sellBuyDifference + " * " + profitInPercentage + " * (" + checkNumberOfBids + " * (1 + " + raznostInPercentage + "));");
-                    
-                    
+
+
                     tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
 
                 } else {
@@ -1020,9 +1033,9 @@ function makeAsk() {
 
                     tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
                 }
-                eventLogger(scriptName + ".tempValue1: " + tempValue1);
+                //eventLogger(scriptName + ".tempValue1: " + tempValue1);
                 var tempValue2 = tempValue1 * (checkNumberOfBids / 10);
-                eventLogger(scriptName + ".tempValue2: " + tempValue2);
+                //eventLogger(scriptName + ".tempValue2: " + tempValue2);
                 //if (profitInPercentage > 0) 
                 //    sellPrice = lastBuyPrice + tempValue1 + tempValue2;
                 //else 
@@ -1033,7 +1046,7 @@ function makeAsk() {
                     eventLogger(scriptName + ".sellPrice: " + sellPrice);
                     restartAll();
                 }
-                    
+
                 eventLogger(scriptName + ".sellPrice: " + sellPrice);
                 if (currencySecondaryKeepAmountFixedValue > 0) {
                     eventLogger(scriptName + ".STEP 2.1");
@@ -1041,16 +1054,15 @@ function makeAsk() {
                         eventLogger(scriptName + ".STEP 2.2");
                         var calc = allBidsPrice * (1 - (feeTaker));
                         eventLogger(scriptName + ".calc: " + calc);
-                        if(checkSellAmount(calc, sellPrice))
+                        if (checkSellAmount(calc, sellPrice))
                             trader.sell(currencySecondary + currencyPrimary, calc, sellPrice);
                     } else {
                         eventLogger(scriptName + ".STEP 2.3");
-                        if(checkSellAmount(allBidsPrice, sellPrice))
+                        if (checkSellAmount(allBidsPrice, sellPrice))
                             trader.sell(currencySecondary + currencyPrimary, allBidsPrice, sellPrice);
                     }
-                } else
-                {
-                    if(checkSellAmount(allBidsPrice, sellPrice))
+                } else {
+                    if (checkSellAmount(allBidsPrice, sellPrice))
                         trader.sell(currencySecondary + currencyPrimary, allBidsPrice, sellPrice);
                 }
             }
@@ -1062,21 +1074,22 @@ function makeAsk() {
                     eventLogger(scriptName + ".STEP 3.2");
                     var calc = lastCurrencySecondaryBallance * (1 - (feeTaker));
                     eventLogger(scriptName + ".calc: " + calc);
-                    if(checkSellAmount(calc, sellPrice))
+                    if (checkSellAmount(calc, sellPrice))
                         trader.sell(currencySecondary + currencyPrimary, calc, sellPrice);
                 } else {
                     eventLogger(scriptName + ".STEP 3.3");
-                    if(checkSellAmount(lastCurrencySecondaryBallance, sellPrice))                        
+                    if (checkSellAmount(lastCurrencySecondaryBallance, sellPrice))
                         trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
                 }
             } else {
                 eventLogger(scriptName + ".STEP 3.4");
-                if(checkSellAmount(lastCurrencySecondaryBallance, sellPrice))       
+                if (checkSellAmount(lastCurrencySecondaryBallance, sellPrice))
                     trader.sell(currencySecondary + currencyPrimary, lastCurrencySecondaryBallance, sellPrice);
             }
         }
 
-        lastCurrencySecondaryBallanceFileWriter(0);
+        //lastCurrencySecondaryBallanceFileWriter(0);
+        trader.fileWrite(lastTradeStatusFile, "BUY");
         restartAll();
     }
     //TODO - check variable lastCurrencySecondaryBallanceFile
@@ -1084,15 +1097,13 @@ function makeAsk() {
     eventLogger(scriptName + ".END");
 }
 
-function checkSellAmount(sellAmount, sellPrice)
-{
+function checkSellAmount(sellAmount, sellPrice) {
     var scriptName = "checkSellAmount()";
     eventLogger(scriptName + ".START");
     eventLogger(scriptName + ".sellAmount: " + sellAmount);
     eventLogger(scriptName + ".sellPrice: " + sellPrice);
     eventLogger(scriptName + ".minBidAmount: " + minBidAmount);
-    if(sellAmount > minBidAmount)
-    {
+    if (sellAmount > minBidAmount) {
         lastSellPriceGenerated = sellPrice;
         trader.fileWrite(lastTradeStatusFile, "BUY");
         return true;
@@ -1146,7 +1157,7 @@ function restartEverything() {
             var currencySecondaryBalance = trader.get("Balance", currencySecondary);
             eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
             if (lastCurrencySecondaryBallance < 0.000001) {
-                eventLogger(scriptName + ".STEP3");                
+                eventLogger(scriptName + ".STEP3");
                 eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
                 restartAll();
             }
@@ -1223,7 +1234,7 @@ trader.on("LastMyBuyPrice").changed() {
     eventLogger(scriptName + ".BUY");
     trader.fileWrite(lastTradeStatusFile, "BUY");
 
-    checkIfAskCanBeMade();
+    //checkIfAskCanBeMade();
 
     //eventLogger(scriptName + ".Restart TraderMainRestart");
     //trader.cancelBids(currencySecondary + currencyPrimary);
