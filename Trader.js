@@ -229,7 +229,7 @@ function openBidsCountCheckFun() {
     var scriptName = "openBidsCountCheckFun()";
     eventLogger(scriptName + ".START");
 
-    openAsksCountCheck = trader.get("OpenAsksCount");
+    openBidsCountCheck = trader.get("OpenBidsCount");
     eventLogger(scriptName + ".openBidsCountCheck: " + openBidsCountCheck);
     eventLogger(scriptName + ".openBidsCountCheckOld: " + openBidsCountCheckOld);
 
@@ -1127,6 +1127,10 @@ function restartAll() {
     eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
     eventLogger(scriptName + ".Restart Trader & TraderMain & TraderMainRestart");
     openAsksCountCheckFun();
+    if(trader.get("OpenBidsCount") == ordersOriginalValue)
+    {
+        trader.fileWrite(lastTradeStatusFile, "SELL");
+    }
     trader.groupStop("TraderMain");
     trader.groupStop("Trader");
     trader.groupStop("TraderMainRestart");
