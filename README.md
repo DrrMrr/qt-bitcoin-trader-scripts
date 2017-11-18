@@ -2,7 +2,7 @@
 
 
 
-QT Bitcoin trader scripts
+QT Bitcoin trader scripts (README IS NOT UPDATED!)
 
 These scripts are working with QT Bitcoin Trader: https://sourceforge.net/projects/bitcointrader/
 

@@ -235,6 +235,7 @@ function openBidsCountCheckFun() {
 
     if (openBidsCountCheck != openBidsCountCheckOld) {
         trader.fileWrite(lastTradeStatusFile, "BUY");
+        restartAll();
     }
     openBidsCountCheckOld = openBidsCountCheck;
     eventLogger(scriptName + ".END");
@@ -481,7 +482,7 @@ function script1() {
     eventLogger(scriptName + ".raznost: " + raznost);
 
     trader.timer(31, "makeBids()");
-    trader.timer(25, "checkIfAskCanBeMade()");
+    trader.timer(15, "checkIfAskCanBeMade()");
     pperv = 0;
     pvtorvraz = 0;
     trader.delay(20, "aaa()");
@@ -690,6 +691,13 @@ function getDistributedBid(bidNumber) {
     return bidValue;
 }
 
+function delayBids() {
+    var scriptName = "delayBids()";
+    eventLogger(scriptName + ".START");
+    eventLogger(scriptName + ".END");
+}
+
+
 function makeBids() {
 
     var scriptName = "makeBids()";
@@ -748,7 +756,8 @@ function makeBids() {
                 eventLogger(scriptName + ".STEP4");
 
                 for (var i = 0; i < orders;) {
-                    eventLogger(scriptName + ".-------------------------------------------");
+                    trader.delay(5, "delayBids()");
+                    eventLogger(scriptName + ".------------MAKE BID NO." + i + "-------------------------------");
                     eventLogger(scriptName + ".i: " + i);
                     eventLogger(scriptName + ".allBidsPriceEnabled: " + allBidsPriceEnabled);
                     eventLogger(scriptName + ".allBidsPrice: " + allBidsPrice);
@@ -797,7 +806,7 @@ function makeBids() {
                     eventLogger(scriptName + ".amount: " + amount);
                     eventLogger(scriptName + ".price: " + price);
 
-                    i = i + 1;
+                    i = i + 1;                    
                 }
             }
         }
