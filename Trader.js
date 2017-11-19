@@ -241,6 +241,20 @@ function openBidsCountCheckFun() {
     eventLogger(scriptName + ".END");
 }
 
+function checkIfBidWasMade() {
+    var scriptName = "checkIfBidWasMade()";
+    eventLogger(scriptName + ".START");
+
+    if(ordersOriginalValue == openBidsCountCheck)
+    {
+        trader.cancelBids(currencySecondary + currencyPrimary);
+        trader.fileWrite(lastTradeStatusFile, "SELL");
+    }
+
+    eventLogger(scriptName + ".END");
+}
+
+checkIfBidWasMade();
 setNewRestartValue();
 //makeAsk();
 /////////////////////////////////////////////////////////////////
@@ -1127,7 +1141,11 @@ function restartAll() {
     eventLogger(scriptName + "./#/#/#/#////////////   RESTART   ////////////////////");
     eventLogger(scriptName + ".Restart Trader & TraderMain & TraderMainRestart");
     openAsksCountCheckFun();
-    if(trader.get("OpenBidsCount") == ordersOriginalValue)
+
+    openBidsCount = trader.get("OpenBidsCount");
+    eventLogger(scriptName + ".openBidsCount: " + openBidsCount);
+    eventLogger(scriptName + ".ordersOriginalValue: " + ordersOriginalValue);
+    if(openBidsCount == ordersOriginalValue)
     {
         trader.fileWrite(lastTradeStatusFile, "SELL");
     }
