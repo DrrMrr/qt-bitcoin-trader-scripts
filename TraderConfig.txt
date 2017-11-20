@@ -1,0 +1,16 @@
+# maximum number of bids;
+maxNumberOfBids=5;
+# should steps between bids be calculated in percentage;
+raznostInPercentageCondition=true;
+# variable, that checks if all variables have been read;
+variableReadSuccessful=true;
+# ;
+makeBuyIfNumberOfBuysIsBigger=10;
+# ;
+makeBuyIfNumberOfBuysIsBiggerCondition=false;
+# ;
+bidsDistributionMaxVolumeSecondCurrency=0;
+# ;
+currencyPrimaryKeepAmountFixedValue=0;
+# ;
+currencySecondaryKeepAmountFixedValue=0;
