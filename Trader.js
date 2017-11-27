@@ -38,10 +38,16 @@ function logger() {
 var variableReadSuccessful = "false";
 var orders = 0;
 var raznostInPercentageCondition = "";
+var raznostInPercentage = 0;
 var makeBuyIfNumberOfBuysIsBiggerCondition = "false";
 var makeBuyIfNumberOfBuysIsBigger = 0;
+var allBidsPriceEnabled = "false";
+var allBidsPrice = 0;
+var feeMaker = 0;
+var feeTaker = 0;
 var currencyPrimaryKeepAmountFixedValue = 0;
 var currencySecondaryKeepAmountFixedValue = 0;
+var stepBetweenOrders = 0;
 ///////////////////////////////////////////////////////////////////////////////////////
 eventLogger("///////////////////////        START - TRADER       ///////////////////");
 readTraderVariables();
@@ -49,47 +55,180 @@ eventLogger("-----------------------------------------");
 eventLogger("VARIABLES FROM CONFIG FILE");
 eventLogger("variableReadSuccessful: " + variableReadSuccessful);
 eventLogger("orders: " + orders);
+eventLogger("raznostInPercentage: " + raznostInPercentage);
 eventLogger("raznostInPercentageCondition: " + raznostInPercentageCondition);
+eventLogger("allBidsPrice: " + allBidsPrice);
+eventLogger("allBidsPriceEnabled: " + allBidsPriceEnabled);
+eventLogger("feeMaker: " + feeMaker);
+eventLogger("feeTaker: " + feeTaker);
 eventLogger("makeBuyIfNumberOfBuysIsBiggerCondition: " + makeBuyIfNumberOfBuysIsBiggerCondition);
 eventLogger("makeBuyIfNumberOfBuysIsBigger: " + makeBuyIfNumberOfBuysIsBigger);
 eventLogger("currencyPrimaryKeepAmountFixedValue: " + currencyPrimaryKeepAmountFixedValue);
 eventLogger("currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
+eventLogger("stepBetweenOrders: " + stepBetweenOrders);
 eventLogger("-----------------------------------------");
 ///////////////////////////////////////////////////////////////////////////////////////
 var ordersOriginalValue = orders;
+var openBidsCountCheck = trader.get("OpenBidsCount");
+var openBidsCountCheckOld = openBidsCountCheck;
 //trader.groupStop("Trader");
 var lastTradeStatus = "";
+var numberOfBidsAfterCountingResetGlobal = 0;
+var numberOfBidsCyclesExecutedGlobal = 0;
 
-function changeMakeBuyIfNumberOfBuysIsBigger()
-{
+function readNumberOfBidsAfterCountingReset() {
+    var scriptName = "readNumberOfBidsAfterCountingReset()";
+    eventLogger(scriptName + ".START");
+
+    var numberOfBidsAfterCountingResetFile = variablePath + "numberOfBidsAfterCountingReset.txt";
+    var numberOfBidsAfterCountingReset = parseFloat(trader.fileReadAll(numberOfBidsAfterCountingResetFile).toString().trim());
+    eventLogger("numberOfBidsAfterCountingReset: " + numberOfBidsAfterCountingReset);
+
+    eventLogger(scriptName + ".END");
+    return numberOfBidsAfterCountingReset;
+}
+
+function resetNumberOfBidsAfterCountingReset() {
+    var scriptName = "resetNumberOfBidsAfterCountingReset()";
+    eventLogger(scriptName + ".START");
+
+    var numberOfBidsAfterCountingResetFile = variablePath + "numberOfBidsAfterCountingReset.txt";
+    trader.fileWrite(numberOfBidsAfterCountingResetFile, "0");
+
+    eventLogger(scriptName + ".END");
+}
+
+function resetNumberOfBidsCyclesExecuted() {
+    var scriptName = "resetNumberOfBidsCyclesExecuted()";
+    eventLogger(scriptName + ".START");
+
+    var numberOfBidsCyclesExecutedFile = variablePath + "numberOfBidsCyclesExecuted.txt";
+    trader.fileWrite(numberOfBidsCyclesExecutedFile, "0");
+
+    eventLogger(scriptName + ".END");
+}
+
+function readNumberOfBidsCyclesExecuted() {
+    var scriptName = "readNumberOfBidsCyclesExecuted()";
+    eventLogger(scriptName + ".START");
+
+    var numberOfBidsCyclesExecutedFile = variablePath + "numberOfBidsCyclesExecuted.txt";
+    var numberOfBidsCyclesExecuted = parseFloat(trader.fileReadAll(numberOfBidsCyclesExecutedFile).toString().trim());
+    eventLogger("numberOfBidsCyclesExecuted: " + numberOfBidsCyclesExecuted);
+
+    eventLogger(scriptName + ".END");
+    return numberOfBidsCyclesExecuted;
+}
+
+function recalculateNumberOfBidsAfterCountingReset() {
+    var scriptName = "recalculateNumberOfBidsAfterCountingReset()";
+    eventLogger(scriptName + ".START");
+
+
+    eventLogger(scriptName + ".END");
+}
+
+function incrementNumberOfBidsCyclesExecuted() {
+    var scriptName = "incrementNumberOfBidsCyclesExecuted()";
+    eventLogger(scriptName + ".START");
+
+    var numberOfBidsCyclesExecuted = 0;
+    numberOfBidsCyclesExecuted = parseFloat(readNumberOfBidsCyclesExecuted());
+    eventLogger("numberOfBidsCyclesExecuted: ---" + numberOfBidsCyclesExecuted + "---");
+    eventLogger("numberOfBidsCyclesExecuted: STEP1");
+    numberOfBidsCyclesExecuted = numberOfBidsCyclesExecuted + 1;
+    eventLogger("numberOfBidsCyclesExecuted: STEP2");
+    var numberOfBidsCyclesExecutedFile = variablePath + "numberOfBidsCyclesExecuted.txt";
+    trader.fileWrite(numberOfBidsCyclesExecutedFile, numberOfBidsCyclesExecuted);
+    numberOfBidsCyclesExecuted = parseFloat(readNumberOfBidsCyclesExecuted());
+    eventLogger("numberOfBidsCyclesExecuted: ---" + numberOfBidsCyclesExecuted + "---");
+    numberOfBidsCyclesExecutedGlobal = numberOfBidsCyclesExecuted;
+    eventLogger(scriptName + ".END");
+
+    return numberOfBidsCyclesExecuted;
+}
+
+function incrementNumberOfBidsAfterCountingReset() {
+    var scriptName = "incrementNumberOfBidsAfterCountingReset()";
+    eventLogger(scriptName + ".START");
+
+    var numberOfBidsAfterCountingReset = 0;
+    numberOfBidsAfterCountingReset = parseFloat(readNumberOfBidsAfterCountingReset());
+    eventLogger("numberOfBidsAfterCountingReset: ---" + numberOfBidsAfterCountingReset + "---");
+    eventLogger("numberOfBidsAfterCountingReset: STEP1");
+    numberOfBidsAfterCountingReset = numberOfBidsAfterCountingReset + 1;
+    eventLogger("numberOfBidsAfterCountingReset: STEP2");
+    var numberOfBidsAfterCountingResetFile = variablePath + "numberOfBidsAfterCountingReset.txt";
+    trader.fileWrite(numberOfBidsAfterCountingResetFile, numberOfBidsAfterCountingReset);
+    numberOfBidsCyclesExecuted = parseFloat(readNumberOfBidsAfterCountingReset());
+    eventLogger("numberOfBidsAfterCountingReset: ---" + numberOfBidsAfterCountingReset + "---");
+
+    eventLogger(scriptName + ".END");
+    return numberOfBidsAfterCountingReset;
+}
+
+numberOfBidsAfterCountingResetGlobal = readNumberOfBidsAfterCountingReset();
+numberOfBidsCyclesExecutedGlobal = parseFloat(readNumberOfBidsCyclesExecuted());
+eventLogger("numberOfBidsAfterCountingResetGlobal: " + numberOfBidsAfterCountingResetGlobal);
+eventLogger("numberOfBidsCyclesExecutedGlobal: " + numberOfBidsCyclesExecutedGlobal);
+
+function changeMakeBuyIfNumberOfBuysIsBigger() {
     var scriptName = "changeMakeBuyIfNumberOfBuysIsBigger()";
-    eventLogger(scriptName + ".START"); 
+    eventLogger(scriptName + ".START");
 
-    if (makeBuyIfNumberOfBuysIsBiggerCondition == "true" && bidsDistributionMaxVolumeSecondCurrency > 0)
-    {
+    var currencySecondaryBalance = trader.get("Balance", currencySecondary);
+    eventLogger("makeBuyIfNumberOfBuysIsBiggerCondition: " + makeBuyIfNumberOfBuysIsBiggerCondition);
+    eventLogger("currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
+    eventLogger("currencySecondaryBalance: " + currencySecondaryBalance);
 
+    if (makeBuyIfNumberOfBuysIsBiggerCondition == "true" && currencySecondaryKeepAmountFixedValue > 0 && currencySecondaryBalance < currencySecondaryKeepAmountFixedValue) {
+
+        numberOfBidsCyclesExecutedGlobal = readNumberOfBidsCyclesExecuted();
+
+        eventLogger("numberOfBidsAfterCountingResetGlobal: " + numberOfBidsAfterCountingResetGlobal);
+        eventLogger("numberOfBidsCyclesExecutedGlobal: " + numberOfBidsCyclesExecutedGlobal);
+        eventLogger("makeBuyIfNumberOfBuysIsBigger: " + makeBuyIfNumberOfBuysIsBigger);
+
+        if (numberOfBidsCyclesExecutedGlobal >= makeBuyIfNumberOfBuysIsBigger) {
+            //numberOfBidsCyclesExecutedGlobal = incrementNumberOfBidsCyclesExecuted();
+            numberOfBidsAfterCountingResetGlobal = incrementNumberOfBidsAfterCountingReset();
+            resetNumberOfBidsCyclesExecuted();
+            writeStatusSell();
+        }
     }
 
     eventLogger(scriptName + ".END");
 }
 
-function writeStatusBuy()
-{
+
+function writeStatusBuy() {
     var scriptName = "writeStatusBuy()";
-    eventLogger(scriptName + ".START"); 
-
-    lastTradeStatus = "BUY";
-    eventLogger(scriptName + ".BUY");
-    trader.fileWrite(lastTradeStatusFile, "BUY");
-    changeMakeBuyIfNumberOfBuysIsBigger();
-
+    eventLogger(scriptName + ".START");
+    openBidsCountCheck = trader.get("OpenBidsCount");
+    eventLogger(scriptName + ".openBidsCountCheck: " + openBidsCountCheck);
+    eventLogger(scriptName + ".openBidsCountCheckOld: " + openBidsCountCheckOld);
+    eventLogger(scriptName + ".ordersOriginalValue: " + ordersOriginalValue);
+    if ((openBidsCountCheck != 0 || openBidsCountCheck != openBidsCountCheckOld) && openBidsCountCheckOld != ordersOriginalValue) {
+        lastTradeStatus = "BUY";
+        eventLogger(scriptName + ".BUY");
+        trader.fileWrite(lastTradeStatusFile, "BUY");
+        var currencySecondaryBalance = trader.get("Balance", currencySecondary);
+        eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
+        eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
+        eventLogger(scriptName + ".makeBuyIfNumberOfBuysIsBiggerCondition: " + makeBuyIfNumberOfBuysIsBiggerCondition);
+        if (currencySecondaryKeepAmountFixedValue > 0 && currencySecondaryBalance < currencySecondaryKeepAmountFixedValue && makeBuyIfNumberOfBuysIsBiggerCondition == "true") {
+            eventLogger(scriptName + "STEP 1");
+            numberOfBidsCyclesExecutedGlobal = incrementNumberOfBidsCyclesExecuted();
+            changeMakeBuyIfNumberOfBuysIsBigger();
+        }
+    }
+    openBidsCountCheckOld = openBidsCountCheck;
     eventLogger(scriptName + ".END");
 }
 
-function writeStatusSell()
-{
+function writeStatusSell() {
     var scriptName = "writeStatusSell()";
-    eventLogger(scriptName + ".START"); 
+    eventLogger(scriptName + ".START");
 
     lastTradeStatus = "SELL";
     eventLogger(scriptName + ".SELL");
@@ -97,7 +236,8 @@ function writeStatusSell()
 
     eventLogger(scriptName + ".END");
 }
-
+//changeMakeBuyIfNumberOfBuysIsBigger
+//trader.groupStop("Trader");
 ////////// SCRIPT 2 /////////////////////////////////////////////
 var vverh = 0.7; // in%, for example, if there is 2%, and at the time running a script purchase price will be 100 BTC, then the purchase price 102 restarts the entire cycle //default 0.4
 //var orderss = 8; // value in the script 1 
@@ -114,11 +254,13 @@ var currencySecondary = "BTC";
 
 var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
 var temp = trader.fileReadAll(lastTradeStatusFile).toString().trim();
+
+var executeAsk = false;
+
 eventLogger("temp: " + temp);
 if (temp.length > 0)
     lastTradeStatus = temp;
-else
-{    
+else {
     writeStatusBuy();
 }
 eventLogger("lastTradeStatus: " + lastTradeStatus);
@@ -131,14 +273,6 @@ eventLogger("lastTradeStatus: " + lastTradeStatus);
 var otstupFile = variablePath + "firstBuyStep.txt";
 var otstup = parseFloat(trader.fileReadAll(otstupFile));
 var otstupOriginal = otstup;
-///////////////////////////////////////////////////////////////////
-// in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
-var raznostInPercentageFile = variablePath + "raznostInPercentage.txt";
-var raznostInPercentage = parseFloat(trader.fileReadAll(raznostInPercentageFile));
-///////////////////////////////////////////////////////////////////
-//stepBetweenOrders.txt
-var stepBetweenOrdersFile = variablePath + "stepBetweenOrders.txt";
-var stepBetweenOrders = parseFloat(trader.fileReadAll(stepBetweenOrdersFile)); // in% overlap stroke rates,calculating the depth of the table buy orders.  For example,in a first step,the price 10BTC percentage of overlap of 20% means that the table will be set in the range // 8-10BTC.  //default 30
 ///////////////////////////////////////////////////////////////////
 //profit.txt
 var profitFile = variablePath + "profit.txt";
@@ -161,13 +295,6 @@ var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
 var profitCurrencyPrimaryAmountCondition = variablePath + "profitCurrencyPrimaryAmountCondition.txt";
 var profitCurrencyPrimaryAmountCondition = trader.fileReadAll(profitCurrencyPrimaryAmountCondition).toString().trim();
 ///////////////////////////////////////////////////////////////////
-var feeTakerFile = variablePath + "feeTaker.txt";
-var feeTaker = parseFloat(trader.fileReadAll(feeTakerFile));
-///////////////////////////////////////////////////////////////////
-var feeMakerFile = variablePath + "feeMaker.txt";
-var feeMaker = parseFloat(trader.fileReadAll(feeMakerFile));
-///////////////////////////////////////////////////////////////////              
-
 var bidPriceFile = variablePath + "bidPrice.txt";
 var bidPrice = trader.get("BidPrice");
 trader.fileWrite(bidPriceFile, bidPrice);
@@ -185,12 +312,6 @@ var firstBidPrice = parseFloat(trader.fileReadAll(firstBidPriceFile));
 ///////////////////////////////////////////////////////////////////
 var firstBidPriceEnabledFile = variablePath + "firstBidPriceEnabled.txt";
 var firstBidPriceEnabled = trader.fileReadAll(firstBidPriceEnabledFile).toString().trim();
-///////////////////////////////////////////////////////////////////
-var allBidsPriceFile = variablePath + "allBidsPrice.txt";
-var allBidsPrice = parseFloat(trader.fileReadAll(allBidsPriceFile));
-///////////////////////////////////////////////////////////////////
-var allBidsPriceEnabledFile = variablePath + "allBidsPriceEnabled.txt";
-var allBidsPriceEnabled = trader.fileReadAll(allBidsPriceEnabledFile).toString().trim();
 ///////////////////////////////////////////////////////////////////
 //var currencyPrimaryKeepAmountFixedValue = 0;
 //var currencySecondaryKeepAmountFixedValue = 0.15;
@@ -274,8 +395,6 @@ function openAsksCountCheckFun() {
     eventLogger(scriptName + ".END");
 }
 
-var openBidsCountCheck = trader.get("OpenBidsCount");
-var openBidsCountCheckOld = openBidsCountCheck;
 var disableCallRestartAll = false;
 
 function openBidsCountCheckFun() {
@@ -287,9 +406,8 @@ function openBidsCountCheckFun() {
     eventLogger(scriptName + ".openBidsCountCheckOld: " + openBidsCountCheckOld);
 
     if (openBidsCountCheck != openBidsCountCheckOld) {
-        openBidsCountCheckOld = openBidsCountCheck;
         writeStatusBuy();
-        if(disableCallRestartAll == false)
+        if (disableCallRestartAll == false)
             restartAll();
     }
     openBidsCountCheckOld = openBidsCountCheck;
@@ -547,8 +665,8 @@ function script1() {
     }
     eventLogger(scriptName + ".raznost: " + raznost);
 
-    trader.timer(31, "makeBids()");
-    trader.timer(15, "checkIfAskCanBeMade()");
+    trader.timer(34, "makeBids()");
+    trader.timer(23, "checkIfAskCanBeMade()");
     pperv = 0;
     pvtorvraz = 0;
     trader.delay(20, "aaa()");
@@ -820,9 +938,9 @@ function makeBids() {
                 eventLogger(scriptName + ".firstBidPriceDiff: " + firstBidPriceDiff);
                 eventLogger(scriptName + ".orders: " + orders);
                 eventLogger(scriptName + ".STEP4");
-
+                var price = trader.get("LastPrice");
                 for (var i = 0; i < orders;) {
-                    trader.delay(5, "delayBids()");
+                    //trader.delay(5, "delayBids()");
                     eventLogger(scriptName + ".------------MAKE BID NO." + i + "-------------------------------");
                     eventLogger(scriptName + ".i: " + i);
                     eventLogger(scriptName + ".allBidsPriceEnabled: " + allBidsPriceEnabled);
@@ -882,9 +1000,9 @@ function makeBids() {
 }
 
 function checkIfAskCanBeMade() {
+    var scriptName = "checkIfAskCanBeMade()";
     if (bidsRunning == false) {
         asksRunning = true;
-        var scriptName = "checkIfAskCanBeMade()";
         eventLogger(scriptName + ".START");
 
         eventLogger(scriptName + ".Read secondary balance");
@@ -895,18 +1013,63 @@ function checkIfAskCanBeMade() {
         eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
         eventLogger(scriptName + ".currencySecondaryKeepAmountFixedValue: " + currencySecondaryKeepAmountFixedValue);
 
+        executeAsk = false;
+        numberOfBidsAfterCountingResetGlobal = parseFloat(readNumberOfBidsAfterCountingReset());
+        eventLogger(scriptName + ".numberOfBidsCyclesExecutedGlobal: " + numberOfBidsAfterCountingResetGlobal);
+
+        if (numberOfBidsAfterCountingResetGlobal > 0 && currencySecondaryKeepAmountFixedValue > 0 && makeBuyIfNumberOfBuysIsBiggerCondition == "true") {
+            eventLogger(scriptName + ".STEP 0.1");
+
+            var calcTempVolume = numberOfBidsAfterCountingResetGlobal * minBidAmount;
+
+            eventLogger(scriptName + ".calcTempVolume: " + calcTempVolume);
+
+            if ((currencySecondaryBalance - calcTempVolume) >= minBidAmount) {
+                if (currencySecondaryBalance > calcTempVolume && currencySecondaryBalance > minBidAmount && calcTempVolume > 0) {
+                    eventLogger(scriptName + ".STEP 0.2");
+                    executeAsk = true;
+                } else if (currencySecondaryBalance > minBidAmount && calcTempVolume == 0) {
+                    eventLogger(scriptName + ".STEP 0.21");
+                    executeAsk = true;
+                }
+            }
+
+        }
+        if (numberOfBidsAfterCountingResetGlobal == 0 && currencySecondaryKeepAmountFixedValue > 0 && makeBuyIfNumberOfBuysIsBiggerCondition == "true") {
+            if (currencySecondaryBalance > minBidAmount) {
+                eventLogger(scriptName + ".STEP 0.22");
+                executeAsk = true;
+            }
+        }
+
+
+        /*
+        if((currencySecondaryBalance - currencySecondaryKeepAmountFixedValue) <= minBidAmount && makeBuyIfNumberOfBuysIsBiggerCondition == "false")
+        {
+            executeAsk = false;
+            eventLogger(scriptName + ".STEP 0.4");
+        }
+        */
+
+        eventLogger(scriptName + ".executeAsk: " + executeAsk);
+        if ((currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99) && (currencySecondaryBalance - currencySecondaryKeepAmountFixedValue) >= minBidAmount)) {
+            executeAsk = true;
+            eventLogger(scriptName + ".STEP 0.22");
+        }
         //TODO - currencySecondaryKeepAmountFixedValue - not o.k.!!!!
-        if (lastCurrencySecondaryBallance > 0.001 || currencySecondaryBalance > 0.001) {
+        if (lastCurrencySecondaryBallance > 0.001 || currencySecondaryBalance > 0.001 || executeAsk == true) {
             eventLogger(scriptName + ".STEP1");
-            if (currencySecondaryBalance > (currencySecondaryKeepAmountFixedValue * 0.99) && (currencySecondaryBalance - currencySecondaryKeepAmountFixedValue) >= minBidAmount) {
+            if (executeAsk == true) {
                 eventLogger(scriptName + ".STEP2");
                 makeAsk();
+
             }
         }
     }
-    eventLogger(scriptName + ".STEP2");
-    eventLogger(scriptName + ".END");
     asksRunning = false;
+    eventLogger(scriptName + ".STEP3");
+    eventLogger(scriptName + ".END");
+
 }
 
 function cancelAsks() {
@@ -937,7 +1100,7 @@ function makeAsk() {
     var makeSell = false;
 
     //TODO - make control to hold, when amount bigger then set in bidsDistributionMaxVolumeSecondCurrency or in similiar variable
-    if (currencySecondaryKeepAmountFixedValue > 0) {
+    if (currencySecondaryKeepAmountFixedValue > 0 && executeAsk == true) {
         eventLogger(scriptName + ".STEP 0.1");
         //lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
         //if (lastCurrencySecondaryBallance == 0)
@@ -946,6 +1109,10 @@ function makeAsk() {
 
         eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
         var tempValue = lastCurrencySecondaryBallance - currencySecondaryKeepAmountFixedValue;
+
+        if (numberOfBidsAfterCountingResetGlobal > 0 && makeBuyIfNumberOfBuysIsBiggerCondition == "true") {
+            tempValue = lastCurrencySecondaryBallance - numberOfBidsAfterCountingResetGlobal * minBidAmount;
+        }
 
         eventLogger(scriptName + ".tempValue: " + tempValue);
         if (tempValue > 0) {
@@ -1074,14 +1241,32 @@ function makeAsk() {
         eventLogger(scriptName + ".profitInPercentage: " + profitInPercentage);
         eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
         if (allBidsPriceEnabled == "true" && (profitInPercentage > 0 || profitCurrencyPrimaryAmount > 0) && lastCurrencySecondaryBallance > allBidsPrice) {
+            eventLogger(scriptName + ".STEP 0.1");
             eventLogger(scriptName + ".DISTRIBUTE SELLS");
             eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
             eventLogger(scriptName + ".allBidsPrice: " + allBidsPrice);
             checkNumberOfBids = lastCurrencySecondaryBallance / allBidsPrice;
             eventLogger(scriptName + ".checkNumberOfBids: " + checkNumberOfBids);
+
+            numberOfBidsAfterCountingResetGlobal = parseFloat(readNumberOfBidsAfterCountingReset());
+            eventLogger(scriptName + ".numberOfBidsCyclesExecutedGlobal: " + numberOfBidsAfterCountingResetGlobal);
+            eventLogger(scriptName + ".makeBuyIfNumberOfBuysIsBiggerCondition: " + makeBuyIfNumberOfBuysIsBiggerCondition);
+
+            /* if (numberOfBidsAfterCountingResetGlobal > 0 && makeBuyIfNumberOfBuysIsBiggerCondition == "true")
+             {
+                 eventLogger(scriptName + ".STEP 0.2");
+                 var calcTempVolume = lastCurrencySecondaryBallance / allBidsPrice;
+                 eventLogger(scriptName + ".minBidAmount: " + minBidAmount);
+                 eventLogger(scriptName + ".calcTempVolume: " + calcTempVolume);
+                 checkNumberOfBids = calcTempVolume / allBidsPrice;
+                 eventLogger(scriptName + ".checkNumberOfBids: " + checkNumberOfBids);
+             }*/
+
             checkNumberOfBids = Math.round(checkNumberOfBids);
             eventLogger(scriptName + ".checkNumberOfBids: " + checkNumberOfBids);
+
             if (checkNumberOfBids > 1) {
+                eventLogger(scriptName + ".STEP 0.3");
                 var sellBuyDifference = sellPrice - lastBuyPrice;
                 eventLogger(scriptName + ".sellBuyDifference: sellBuyDifference = sellPrice - lastBuyPrice");
                 eventLogger(scriptName + ".sellBuyDifference: " + sellBuyDifference + " = " + sellPrice + " - " + lastBuyPrice);
@@ -1094,6 +1279,7 @@ function makeAsk() {
                 eventLogger(scriptName + ". tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage /100) * checkNumberOfBids * (1 * 1.05)");
                 eventLogger(scriptName + ". tempValue4 = " + tempValue4 + " + " + tempValue4 + " * (" + raznostInPercentage + " /100) * " + checkNumberOfBids + " * (1 * 1.05)");
                 if (profitInPercentage > 0) {
+                    eventLogger(scriptName + ".STEP 0.4");
                     //tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));
                     //eventLogger(scriptName + ".raznostInPercentage: tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));");
                     //eventLogger(scriptName + ".raznostInPercentage: " + tempValue1 + " = " + sellBuyDifference + " * " + profitInPercentage + " * (" + checkNumberOfBids + " * (1 + " + raznostInPercentage + "));");
@@ -1102,6 +1288,7 @@ function makeAsk() {
                     tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
 
                 } else {
+                    eventLogger(scriptName + ".STEP 0.5");
                     //tempValue1 = sellBuyDifference + profitCurrencyPrimaryAmount * (checkNumberOfBids * (1 + raznostInPercentage));
                     //eventLogger(scriptName + ".raznostInPercentage: tempValue1 = sellBuyDifference + profitCurrencyPrimaryAmount * (checkNumberOfBids * (1 + raznostInPercentage));");
                     //eventLogger(scriptName + ".raznostInPercentage: " + tempValue1 + " = " + sellBuyDifference + " + " + profitCurrencyPrimaryAmount + " * (" + checkNumberOfBids + " * (1 + " + raznostInPercentage + "));");
@@ -1116,6 +1303,7 @@ function makeAsk() {
                 //else 
                 sellPrice = tempValue4;
                 if (lastSellPriceGenerated == sellPrice) {
+                    eventLogger(scriptName + ".STEP 0.6");
                     eventLogger(scriptName + ".lastSellPriceGenerated == sellPrice");
                     eventLogger(scriptName + ".lastSellPriceGenerated: " + lastSellPriceGenerated);
                     eventLogger(scriptName + ".sellPrice: " + sellPrice);
@@ -1167,6 +1355,7 @@ function makeAsk() {
         //writeStatusBuy();
         restartAll();
     }
+
     //TODO - check variable lastCurrencySecondaryBallanceFile
 
     eventLogger(scriptName + ".END");
@@ -1180,7 +1369,7 @@ function checkSellAmount(sellAmount, sellPrice) {
     eventLogger(scriptName + ".minBidAmount: " + minBidAmount);
     if (sellAmount > minBidAmount) {
         lastSellPriceGenerated = sellPrice;
-        writeStatusBuy();
+        //writeStatusBuy();
         return true;
     }
     return false;
@@ -1228,7 +1417,8 @@ function restartEverything() {
     eventLogger(scriptName + ".START");
 
     var openBidsCount = trader.get("OpenBidsCount");
-    lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
+    //lastCurrencySecondaryBallance = parseFloat(trader.fileReadAll(lastCurrencySecondaryBallanceFile));
+    lastCurrencySecondaryBallance = trader.get("Balance", currencySecondary);
     eventLogger(scriptName + ".orders: " + orders);
     eventLogger(scriptName + ".openBidsCount: " + openBidsCount);
     eventLogger(scriptName + ".lastCurrencySecondaryBallance: " + lastCurrencySecondaryBallance);
@@ -1353,26 +1543,31 @@ function readTraderVariables() {
             if (variableArray.length > 0) {
                 if (stringPartOne == "maxNumberOfBids") {
                     orders = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "raznostInPercentage") {
+                    raznostInPercentage = parseFloat(stringPartTwo);
                 } else if (stringPartOne == "raznostInPercentageCondition") {
                     raznostInPercentageCondition = stringPartTwo;
-                } 
-                else if (stringPartOne == "makeBuyIfNumberOfBuysIsBigger") {
+                } else if (stringPartOne == "allBidsPrice") {
+                    allBidsPrice = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "allBidsPriceEnabled") {
+                    allBidsPriceEnabled = stringPartTwo;
+                } else if (stringPartOne == "feeMaker") {
+                    feeMaker = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "feeTaker") {
+                    feeTaker = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "makeBuyIfNumberOfBuysIsBigger") {
                     makeBuyIfNumberOfBuysIsBigger = parseFloat(stringPartTwo);
                 } else if (stringPartOne == "makeBuyIfNumberOfBuysIsBiggerCondition") {
                     makeBuyIfNumberOfBuysIsBiggerCondition = stringPartTwo;
-                }
-                else if (stringPartOne == "currencyPrimaryKeepAmountFixedValue") {
+                } else if (stringPartOne == "currencyPrimaryKeepAmountFixedValue") {
                     currencyPrimaryKeepAmountFixedValue = parseFloat(stringPartTwo);
-                }
-                else if (stringPartOne == "currencySecondaryKeepAmountFixedValue") {
+                } else if (stringPartOne == "currencySecondaryKeepAmountFixedValue") {
                     currencySecondaryKeepAmountFixedValue = parseFloat(stringPartTwo);
-                }                
-                
-
-                else if (stringPartOne == "variableReadSuccessful") {
+                } else if (stringPartOne == "stepBetweenOrders") {
+                    stepBetweenOrders = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "variableReadSuccessful") {
                     variableReadSuccessful = stringPartTwo;
                 }
-
             }
         }
 

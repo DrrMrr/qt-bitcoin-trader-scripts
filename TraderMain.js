@@ -56,10 +56,10 @@ eventLogger(scriptName + ".lastMySellPrice: " + lastMySellPriceOld);
 trader.fileWrite(lastSaleFile, lastMySellPriceOld);
 
 ///////////////////////////////////////////////////////////////////
-var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
+//var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
 var currencySecondaryBalance = trader.get("Balance", currencySecondary);
 eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
-trader.fileWrite(lastCurrencySecondaryBallanceFile, currencySecondaryBalance);
+//trader.fileWrite(lastCurrencySecondaryBallanceFile, currencySecondaryBalance);
 
 ///////////////////////////////////////////////////////////////////
 var bidPriceFile = variablePath + "bidPrice.txt";
@@ -110,7 +110,7 @@ function restartEverything() {
 
         currencySecondaryBalance = trader.get("Balance", currencySecondary);
         eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
-        trader.fileWrite(lastCurrencySecondaryBallanceFile, currencySecondaryBalance);
+        //trader.fileWrite(lastCurrencySecondaryBallanceFile, currencySecondaryBalance);
 
         openBidsCount = trader.get("OpenBidsCount");
         openAsksCount = trader.get("OpenAsksCount");
