@@ -28,17 +28,12 @@ function eventLogger(tempString) {
     if (logToWindow)
         trader.log(tempString);
 }
-///////////////////////////////////////////////////////////////////
-
-function logger() {
-    trader.fileAppend(fileLoggerFile, fileLogger + " - " + trader.dateTimeString());
-}
 
 ////////   VARIABLES FOR VALUES FROM CONFIG FILE ///////////
 var variableReadSuccessful = "false";
 var orders = 0;
-var raznostInPercentageCondition = "";
-var raznostInPercentage = 0;
+var bidsDifferenceInPercentageCondition = "";
+var bidsDifferenceInPercentage = 0;
 var makeBuyIfNumberOfBuysIsBiggerCondition = "false";
 var makeBuyIfNumberOfBuysIsBigger = 0;
 var allBidsPriceEnabled = "false";
@@ -52,6 +47,19 @@ var currencyPrimary = "";
 var currencySecondary = "";
 var resetPrice = 0;
 var resetBidsEnabled = "";
+var profit = 0;
+var profitCurrencyPrimaryAmount = 0;
+var profitCurrencyPrimaryAmountCondition = 0;
+var profitInPercentage = 0;
+var martin = 0;
+var firstBuyStep = 0;
+var firstBidPrice = 0;
+var firstBidPriceEnabled = "";
+var bidsDistributionEnabled = "";
+var bidsDistributionMaxNumberOfBids = 0;
+var bidsDistributionMaxVolumeSecondCurrency = 0;
+var bidsDistributionMinExchangeBid = 0;
+var minBidAmount = 0;
 ///////////////////////////////////////////////////////////////////////////////////////
 eventLogger("///////////////////////        START - TRADER       ///////////////////");
 readTraderVariables();
@@ -59,8 +67,8 @@ eventLogger("-----------------------------------------");
 eventLogger("VARIABLES FROM CONFIG FILE");
 eventLogger("variableReadSuccessful: " + variableReadSuccessful);
 eventLogger("orders: " + orders);
-eventLogger("raznostInPercentage: " + raznostInPercentage);
-eventLogger("raznostInPercentageCondition: " + raznostInPercentageCondition);
+eventLogger("bidsDifferenceInPercentage: " + bidsDifferenceInPercentage);
+eventLogger("bidsDifferenceInPercentageCondition: " + bidsDifferenceInPercentageCondition);
 eventLogger("allBidsPrice: " + allBidsPrice);
 eventLogger("allBidsPriceEnabled: " + allBidsPriceEnabled);
 eventLogger("feeMaker: " + feeMaker);
@@ -74,6 +82,21 @@ eventLogger("currencyPrimary: " + currencyPrimary);
 eventLogger("currencySecondary: " + currencySecondary);
 eventLogger("resetPrice: " + resetPrice);
 eventLogger("resetBidsEnabled: " + resetBidsEnabled);
+eventLogger("profit: " + profit);
+eventLogger("profitCurrencyPrimaryAmount: " + profitCurrencyPrimaryAmount);
+eventLogger("profitCurrencyPrimaryAmountCondition: " + profitCurrencyPrimaryAmountCondition);
+eventLogger("profitInPercentage: " + profitInPercentage);
+eventLogger("martin: " + martin);
+eventLogger("firstBuyStep: " + firstBuyStep);
+eventLogger("firstBidPrice: " + firstBidPrice);
+eventLogger("firstBidPriceEnabled: " + firstBidPriceEnabled);
+eventLogger("bidsDistributionEnabled: " + bidsDistributionEnabled);
+eventLogger("bidsDistributionMaxNumberOfBids: " + bidsDistributionMaxNumberOfBids);
+eventLogger("bidsDistributionMaxVolumeSecondCurrency: " + bidsDistributionMaxVolumeSecondCurrency);
+eventLogger("bidsDistributionMinExchangeBid: " + bidsDistributionMinExchangeBid);
+eventLogger("minBidAmount: " + minBidAmount);
+
+
 
 eventLogger("-----------------------------------------");
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +106,7 @@ var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
 lastTradeStatus = trader.fileReadAll(lastTradeStatusFile).toString().trim();
 eventLogger("lastTradeStatus: " + lastTradeStatus);
 if (lastTradeStatus == "SELL") {
-//    trader.cancelBids(currencySecondary + currencyPrimary);
+    //    trader.cancelBids(currencySecondary + currencyPrimary);
 }
 
 var ordersOriginalValue = orders;
@@ -247,10 +270,8 @@ function writeStatusBuy() {
     eventLogger(scriptName + ".lastMyBuyPriceOriginal: " + lastMyBuyPriceOriginal);
 
     //if (((openBidsCountCheck != 0 || openBidsCountCheck != openBidsCountCheckOld) && openBidsCountCheckOld != ordersOriginalValue) || (lastBuyPrice != lastBuyPriceOld)) {
-    if ((lastBuyPrice != lastBuyPriceOld) || (openBidsCountCheckOld > openBidsCountCheck && openBidsCountCheck != 0) || lastBuyPrice != lastMyBuyPriceOriginal)
-    {        
-        if (lastBuyPrice != lastMyBuyPriceOriginal)
-        {
+    if ((lastBuyPrice != lastBuyPriceOld) || (openBidsCountCheckOld > openBidsCountCheck && openBidsCountCheck != 0) || lastBuyPrice != lastMyBuyPriceOriginal) {
+        if (lastBuyPrice != lastMyBuyPriceOriginal) {
             lastBuyPrice = trader.get("LastMyBuyPrice");
             trader.fileWrite(lastMyBuyPriceOriginalFile, lastBuyPrice);
             lastMyBuyPriceOriginal = lastBuyPrice;
@@ -270,8 +291,7 @@ function writeStatusBuy() {
             changeMakeBuyIfNumberOfBuysIsBigger();
         }
     }
-    if (lastBuyPrice != lastBuyPriceOld && openBidsCountCheck == ordersOriginalValue)
-    {
+    if (lastBuyPrice != lastBuyPriceOld && openBidsCountCheck == ordersOriginalValue) {
         trader.cancelBids(currencySecondary + currencyPrimary);
     }
 
@@ -307,8 +327,7 @@ var lastMyBuyPriceOriginal = parseFloat(trader.fileReadAll(lastMyBuyPriceOrigina
 eventLogger("lastBuyPrice: " + lastBuyPrice);
 eventLogger("lastMyBuyPriceOriginal: " + lastMyBuyPriceOriginal);
 
-if(lastBuyPrice != lastMyBuyPriceOriginal)
-{
+if (lastBuyPrice != lastMyBuyPriceOriginal) {
     trader.cancelBids(currencySecondary + currencyPrimary);
 
     lastTradeStatus = "BUY";
@@ -328,54 +347,17 @@ eventLogger("lastTradeStatus: " + lastTradeStatus);
 
 /////////////////////////////////////////////////////////////////
 ////////// SCRIPT 1 /////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////
-// in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper //default 0.5
-var otstupFile = variablePath + "firstBuyStep.txt";
-var otstup = parseFloat(trader.fileReadAll(otstupFile));
+var otstup = firstBuyStep;
 var otstupOriginal = otstup;
-///////////////////////////////////////////////////////////////////
-//profit.txt
-var profitFile = variablePath + "profit.txt";
-var profit = parseFloat(trader.fileReadAll(profitFile)); // in%,profit,profit How to lay into each sell order. 
-///////////////////////////////////////////////////////////////////
-//martinStep.txt
-var martinFile = variablePath + "martinStep.txt";
-var martin = parseFloat(trader.fileReadAll(martinFile)); // in%,martingale,when calculating each table buy orders following order cheaper by volume greater than the previous to this value.  //default 15
+
 ///////////////////////////////////////////////////////////////////
 var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
 var lastCurrencySecondaryBallance = 0;
-
-///////////////////////////////////////////////////////////////////
-var profitCurrencyPrimaryAmount = variablePath + "profitCurrencyPrimaryAmount.txt";
-var profitCurrencyPrimaryAmount = parseFloat(trader.fileReadAll(profitCurrencyPrimaryAmount));
-///////////////////////////////////////////////////////////////////
-var profitInPercentageFile = variablePath + "profitCurrencyPrimaryInPercentage.txt";
-var profitInPercentage = parseFloat(trader.fileReadAll(profitInPercentageFile));
-///////////////////////////////////////////////////////////////////
-var profitCurrencyPrimaryAmountCondition = variablePath + "profitCurrencyPrimaryAmountCondition.txt";
-var profitCurrencyPrimaryAmountCondition = trader.fileReadAll(profitCurrencyPrimaryAmountCondition).toString().trim();
 ///////////////////////////////////////////////////////////////////
 var bidPriceFile = variablePath + "bidPrice.txt";
 var bidPrice = trader.get("BidPrice");
 trader.fileWrite(bidPriceFile, bidPrice);
 ///////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////
-var fileLoggerFile = variablePath + "fileLoggerTrader.txt";
-///////////////////////////////////////////////////////////////////
-var firstBidPriceFile = variablePath + "firstBidPrice.txt";
-var firstBidPrice = parseFloat(trader.fileReadAll(firstBidPriceFile));
-///////////////////////////////////////////////////////////////////
-var firstBidPriceEnabledFile = variablePath + "firstBidPriceEnabled.txt";
-var firstBidPriceEnabled = trader.fileReadAll(firstBidPriceEnabledFile).toString().trim();
-///////////////////////////////////////////////////////////////////
-//var currencyPrimaryKeepAmountFixedValue = 0;
-//var currencySecondaryKeepAmountFixedValue = 0.15;
-///////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////
-var minBidAmount = 6;
 
 var lastSellPriceGenerated = 0;
 
@@ -385,29 +367,6 @@ var lastSellPriceGenerated = 0;
 //////                   BIDS DISTRIBUTION /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////              
 ///////////////////////////////////////////////////////////////////
-// file location
-var bidsDistributionEnabledFile = variablePath + "bidsDistributionEnabled.txt";
-// value - true or false
-var bidsDistributionEnabled = trader.fileReadAll(bidsDistributionEnabledFile).toString().trim();
-
-// file location
-var bidsDistributionMinExchangeBidFile = variablePath + "bidsDistributionMinExchangeBid.txt";
-// value - true or false
-var bidsDistributionMinExchangeBid = parseFloat(trader.fileReadAll(bidsDistributionMinExchangeBidFile));
-
-
-// file location
-var bidsDistributionMaxNumberOfBidsFile = variablePath + "bidsDistributionMaxNumberOfBids.txt";
-// value - true or false
-var bidsDistributionMaxNumberOfBids = trader.fileReadAll(bidsDistributionMaxNumberOfBidsFile);
-
-
-
-// file location
-var bidsDistributionMaxVolumeSecondCurrencyFile = variablePath + "bidsDistributionMaxVolumeSecondCurrency.txt";
-// value - true or false
-var bidsDistributionMaxVolumeSecondCurrency = trader.fileReadAll(bidsDistributionMaxVolumeSecondCurrencyFile);
-
 var sumAskIdNumbers = 0;
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
@@ -454,19 +413,16 @@ function openAsksCountCheckFun() {
     eventLogger(scriptName + ".lastSellPriceOld: " + lastSellPriceOld);
 
 
-    if (openAsksCountCheck < openAsksCountCheckOld || lastSellPrice != lastSellPriceOld)    
-    {
+    if (openAsksCountCheck < openAsksCountCheckOld || lastSellPrice != lastSellPriceOld) {
         lastBuyPrice = trader.get("LastMyBuyPrice");
         eventLogger(scriptName + ".lastBuyPrice: " + lastBuyPrice);
         eventLogger(scriptName + ".lastBuyPriceOld: " + lastBuyPriceOld);
-        if(lastBuyPrice == lastBuyPriceOld)
-        {
+        if (lastBuyPrice == lastBuyPriceOld) {
             writeStatusSell();
         }
     }
 
-    if (openBidsCountCheckOld > openBidsCountCheck)
-    {
+    if (openBidsCountCheckOld > openBidsCountCheck) {
         lastTradeStatus = "BUY";
         eventLogger(scriptName + ".BUY");
         trader.fileWrite(lastTradeStatusFile, "BUY");
@@ -739,9 +695,9 @@ function script1() {
     eventLogger(scriptName + ".pricet: " + pricet);
     var lastPrice = trader.get("LastPrice");
     eventLogger(scriptName + ".lastPrice: " + lastPrice);
-    if (raznostInPercentageCondition == "true") {
+    if (bidsDifferenceInPercentageCondition == "true") {
         eventLogger(scriptName + ".STEP1");
-        raznost = lastPrice / 100 * raznostInPercentage;
+        raznost = lastPrice / 100 * bidsDifferenceInPercentage;
 
     } else {
         eventLogger(scriptName + ".STEP2");
@@ -848,7 +804,7 @@ function canMakeBid() {
     var diff1 = lastMyBuyPrice - raznost;
 
     eventLogger(scriptName + ".raznost: " + raznost);
-    eventLogger(scriptName + ".diff1: " + diff1);    
+    eventLogger(scriptName + ".diff1: " + diff1);
 
     if (lastPrice < diff1 && lastPrice < lastMyBuyPrice && openBidsCount == 0) {
         eventLogger(scriptName + ".STEP5");
@@ -862,7 +818,7 @@ function canMakeBid() {
     eventLogger(scriptName + ".lastPrice - lastMySellPrice: " + (lastPrice - lastMySellPrice));
     eventLogger(scriptName + ".lastMyBuyPrice - lastPrice: " + (lastMyBuyPrice - lastPrice));
 
-    //raznost = lastPrice * (raznostInPercentage / 100);
+    //raznost = lastPrice * (bidsDifferenceInPercentage / 100);
 
     if (openBidsCount == 0 && lastPrice < lastMyBuyPrice && (lastMyBuyPrice - lastPrice) >= raznost)
     //if(openBids == 0 && lastMySellPrice > lastPrice && partValueSell > (lastPrice - lastMySellPrice) && lastMyBuyPrice > lastPrice && partValueSell > raznost)
@@ -1324,7 +1280,7 @@ function makeAsk() {
         var lastMySellPriceFile = variablePath + "lastMySellPrice.txt";
         trader.fileWrite(lastMySellPriceFile, sellPrice);
 
-        if (raznostInPercentageCondition == "true") {
+        if (bidsDifferenceInPercentageCondition == "true") {
             rest = lastBuyPrice + (sellPrice - lastBuyPrice) * resetPrice;
         }
 
@@ -1363,29 +1319,29 @@ function makeAsk() {
                 eventLogger(scriptName + ".sellBuyDifference: sellBuyDifference = sellPrice - lastBuyPrice");
                 eventLogger(scriptName + ".sellBuyDifference: " + sellBuyDifference + " = " + sellPrice + " - " + lastBuyPrice);
                 eventLogger(scriptName + ".sellBuyDifference: " + sellBuyDifference);
-                eventLogger(scriptName + ".raznostInPercentage: " + raznostInPercentage);
+                eventLogger(scriptName + ".bidsDifferenceInPercentage: " + bidsDifferenceInPercentage);
                 var tempValue1 = 0;
                 var tempValue4 = 0;
                 tempValue4 = lastBuyPrice;
 
-                eventLogger(scriptName + ". tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage /100) * checkNumberOfBids * (1 * 1.05)");
-                eventLogger(scriptName + ". tempValue4 = " + tempValue4 + " + " + tempValue4 + " * (" + raznostInPercentage + " /100) * " + checkNumberOfBids + " * (1 * 1.05)");
+                eventLogger(scriptName + ". tempValue4 = tempValue4 + tempValue4 * (bidsDifferenceInPercentage /100) * checkNumberOfBids * (1 * 1.05)");
+                eventLogger(scriptName + ". tempValue4 = " + tempValue4 + " + " + tempValue4 + " * (" + bidsDifferenceInPercentage + " /100) * " + checkNumberOfBids + " * (1 * 1.05)");
                 if (profitInPercentage > 0) {
                     eventLogger(scriptName + ".STEP 0.4");
-                    //tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));
-                    //eventLogger(scriptName + ".raznostInPercentage: tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + raznostInPercentage));");
-                    //eventLogger(scriptName + ".raznostInPercentage: " + tempValue1 + " = " + sellBuyDifference + " * " + profitInPercentage + " * (" + checkNumberOfBids + " * (1 + " + raznostInPercentage + "));");
+                    //tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + bidsDifferenceInPercentage));
+                    //eventLogger(scriptName + ".bidsDifferenceInPercentage: tempValue1 = sellBuyDifference * profitInPercentage * (checkNumberOfBids * (1 + bidsDifferenceInPercentage));");
+                    //eventLogger(scriptName + ".bidsDifferenceInPercentage: " + tempValue1 + " = " + sellBuyDifference + " * " + profitInPercentage + " * (" + checkNumberOfBids + " * (1 + " + bidsDifferenceInPercentage + "));");
 
 
-                    tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
+                    tempValue4 = tempValue4 + tempValue4 * (bidsDifferenceInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
 
                 } else {
                     eventLogger(scriptName + ".STEP 0.5");
-                    //tempValue1 = sellBuyDifference + profitCurrencyPrimaryAmount * (checkNumberOfBids * (1 + raznostInPercentage));
-                    //eventLogger(scriptName + ".raznostInPercentage: tempValue1 = sellBuyDifference + profitCurrencyPrimaryAmount * (checkNumberOfBids * (1 + raznostInPercentage));");
-                    //eventLogger(scriptName + ".raznostInPercentage: " + tempValue1 + " = " + sellBuyDifference + " + " + profitCurrencyPrimaryAmount + " * (" + checkNumberOfBids + " * (1 + " + raznostInPercentage + "));");
+                    //tempValue1 = sellBuyDifference + profitCurrencyPrimaryAmount * (checkNumberOfBids * (1 + bidsDifferenceInPercentage));
+                    //eventLogger(scriptName + ".bidsDifferenceInPercentage: tempValue1 = sellBuyDifference + profitCurrencyPrimaryAmount * (checkNumberOfBids * (1 + bidsDifferenceInPercentage));");
+                    //eventLogger(scriptName + ".bidsDifferenceInPercentage: " + tempValue1 + " = " + sellBuyDifference + " + " + profitCurrencyPrimaryAmount + " * (" + checkNumberOfBids + " * (1 + " + bidsDifferenceInPercentage + "));");
 
-                    tempValue4 = tempValue4 + tempValue4 * (raznostInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
+                    tempValue4 = tempValue4 + tempValue4 * (bidsDifferenceInPercentage / 100) * checkNumberOfBids * (1 * 1.05);
                 }
                 //eventLogger(scriptName + ".tempValue1: " + tempValue1);
                 var tempValue2 = tempValue1 * (checkNumberOfBids / 10);
@@ -1489,7 +1445,7 @@ function restartAll() {
         writeStatusSell();
     }
 
-    
+
     trader.fileWrite(lastMyBuyPriceOriginalFile, lastBuyPrice);
 
     trader.groupStop("TraderMain");
@@ -1497,11 +1453,11 @@ function restartAll() {
     trader.groupStop("TraderMainRestart");
     trader.groupStart("TraderMainRestart");
 
-    
+
     eventLogger(scriptName + ".END");
 
     eventLogger(scriptName + "./#/#/#/#////////////   RESTART - END   ////////////////////");
-    
+
 }
 
 function lastCurrencySecondaryBallanceFileWriter(writeValue) {
@@ -1647,10 +1603,10 @@ function readTraderVariables() {
             if (variableArray.length > 0) {
                 if (stringPartOne == "maxNumberOfBids") {
                     orders = parseFloat(stringPartTwo);
-                } else if (stringPartOne == "raznostInPercentage") {
-                    raznostInPercentage = parseFloat(stringPartTwo);
-                } else if (stringPartOne == "raznostInPercentageCondition") {
-                    raznostInPercentageCondition = stringPartTwo;
+                } else if (stringPartOne == "bidsDifferenceInPercentage") {
+                    bidsDifferenceInPercentage = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "bidsDifferenceInPercentageCondition") {
+                    bidsDifferenceInPercentageCondition = stringPartTwo;
                 } else if (stringPartOne == "allBidsPrice") {
                     allBidsPrice = parseFloat(stringPartTwo);
                 } else if (stringPartOne == "allBidsPriceEnabled") {
@@ -1679,7 +1635,35 @@ function readTraderVariables() {
                     resetPrice = parseFloat(stringPartTwo);
                 } else if (stringPartOne == "resetBidsEnabled") {
                     resetBidsEnabled = stringPartTwo;
+                } else if (stringPartOne == "profit") {
+                    profit = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "profitCurrencyPrimaryAmount") {
+                    profitCurrencyPrimaryAmount = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "profitCurrencyPrimaryAmountCondition") {
+                    profitCurrencyPrimaryAmountCondition = stringPartTwo;
+                } else if (stringPartOne == "profitInPercentage") {
+                    profitInPercentage = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "martin") {
+                    martin = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "firstBuyStep") {
+                    firstBuyStep = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "firstBidPrice") {
+                    firstBidPrice = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "firstBidPriceEnabled") {
+                    firstBidPriceEnabled = stringPartTwo;
+                } else if (stringPartOne == "bidsDistributionEnabled") {
+                    bidsDistributionEnabled = stringPartTwo;
+                } else if (stringPartOne == "bidsDistributionMaxNumberOfBids") {
+                    bidsDistributionMaxNumberOfBids = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "bidsDistributionMaxVolumeSecondCurrency") {
+                    bidsDistributionMaxVolumeSecondCurrency = parseFloat(stringPartTwo);
+                } else if (stringPartOne == "bidsDistributionMinExchangeBid") {
+                    bidsDistributionMinExchangeBid = parseFloat(stringPartTwo);
                 }
+                else if (stringPartOne == "minBidAmount") {
+                    minBidAmount = parseFloat(stringPartTwo);
+                }
+                
 
             }
         }
