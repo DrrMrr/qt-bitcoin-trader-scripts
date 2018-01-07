@@ -1,4 +1,4 @@
-var variablePath = "C:\\Users\\Damjan\\Documents\\GitHub\\qt-bitcoin-trader-scripts\\";
+var variablePath = "C:\\Users\\Damjan\\Documents\\GitHub\\qt-bitcoin-trader-scripts\\BTCIOT\\";
 var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
 
 emptyLogFiles();
