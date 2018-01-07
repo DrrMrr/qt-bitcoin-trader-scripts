@@ -762,14 +762,7 @@ function canMakeBid() {
 
     //////////////////////////////////////////////////////////////////////
     var openAsksCount = trader.get("OpenAsksCount");
-    // if there are no open asks
-    /*if (openAsksCount == 0) {
-        eventLogger(scriptName + ".STEP2");
-        makeBid = true;
-        eventLogger(scriptName + ".makeBid: " + makeBid);
-        return makeBid;
-    }*/
-    //////////////////////////////////////////////////////////////////////
+    
     var lastPrice = trader.get("LastPrice");
     var diffLastMySellPriceLastPrice = Math.abs(lastMySellPrice - lastPrice);
     var diffLastMyBuyPriceLastPrice = Math.abs(lastMyBuyPrice - lastPrice);
@@ -783,24 +776,7 @@ function canMakeBid() {
     var partValueBuy = Math.abs(lastMyBuyPrice - lastPrice) / lastPrice;
 
     eventLogger(scriptName + ".partValueBuy: " + partValueBuy);
-
-    /*if (raznost > diffLastMySellPriceLastPrice && openBidsCount == 0 && diffLastMySellPriceLastPrice < diffLastMyBuyPriceLastPrice) {
-        //if (partValue > raznost && openBidsCount == 0 && diffLastMySellPriceLastPrice < diffLastMyBuyPriceLastPrice) {
-        eventLogger(scriptName + ".STEP3");
-        eventLogger(scriptName + ".raznost: " + raznost);
-        makeBid = true;
-        eventLogger(scriptName + ".makeBid: " + makeBid);
-        return makeBid;
-    }*/
-
-    //buy if last price is higher then last sell price and there are no open bids
-    /*if (openBidsCount == 0 && lastPrice >= lastMySellPrice && lastMySellPrice > lastMyBuyPrice) {
-        eventLogger(scriptName + ".STEP4");
-        makeBid = true;
-        eventLogger(scriptName + ".makeBid: " + makeBid);
-        return makeBid;
-    }*/
-
+   
     var diff1 = lastMyBuyPrice - raznost;
 
     eventLogger(scriptName + ".raznost: " + raznost);
