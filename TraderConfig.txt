@@ -47,6 +47,8 @@ profitInPercentage=0.3;
 
 
 #####  OPTIONAL #####;
+
+
 #####  RESET BIDS - START #####;
 # IF PRICE IS HIGHER THAN LAST BUY PRICE * resetPrice * 100 - START #####;
 # resetPrice 		- when should bids be reset;

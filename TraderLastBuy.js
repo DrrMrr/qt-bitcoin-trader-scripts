@@ -29,8 +29,8 @@ eventLogger("lastMyBuyPrice: " + lastMyBuyPrice);
 eventLogger("lastMySellPrice: " + lastMySellPriceOld);
 
 ///////////		write currencySecondaryBalance	///////////////////
-var currencyPrimary = "USD";
-var currencySecondary = "BTC";
+var currencyPrimary = "BTC";
+var currencySecondary = "IOT";
 var lastCurrencySecondaryBallanceFile = variablePath + "lastCurrencySecondaryBallance.txt";
 var currencySecondaryBalance = trader.get("Balance", currencySecondary);
 eventLogger("currencySecondaryBalance: " + currencySecondaryBalance);
