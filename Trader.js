@@ -1540,6 +1540,9 @@ trader.on("LastMyBuyPrice").changed() {
     eventLogger(scriptName + ".START");
 
     writeStatusBuy();
+    lastTradeStatus = "BUY";
+    eventLogger(scriptName + ".BUY");
+    trader.fileWrite(lastTradeStatusFile, "BUY");
 
     eventLogger(scriptName + ".END");
 }
@@ -1549,6 +1552,9 @@ trader.on("LastMySellPrice").changed() {
     eventLogger(scriptName + ".START");
 
     writeStatusSell();
+    lastTradeStatus = "SELL";
+    eventLogger(scriptName + ".BUY");
+    trader.fileWrite(lastTradeStatusFile, "BUY");
 
     eventLogger(scriptName + ".END");
 }
