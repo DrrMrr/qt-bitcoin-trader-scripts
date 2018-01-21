@@ -270,7 +270,7 @@ function writeStatusBuy() {
     eventLogger(scriptName + ".lastMyBuyPriceOriginal: " + lastMyBuyPriceOriginal);
 
     //if (((openBidsCountCheck != 0 || openBidsCountCheck != openBidsCountCheckOld) && openBidsCountCheckOld != ordersOriginalValue) || (lastBuyPrice != lastBuyPriceOld)) {
-    if ((lastBuyPrice != lastBuyPriceOld) || (openBidsCountCheckOld > openBidsCountCheck && openBidsCountCheck != 0) || lastBuyPrice != lastMyBuyPriceOriginal) {
+    if ((lastBuyPrice != lastBuyPriceOld) || (openBidsCountCheckOld > openBidsCountCheck && openBidsCountCheck != 0) || lastBuyPrice != lastMyBuyPriceOriginal || (openBidsCountCheck > openBidsCountCheckOld && openBidsCountCheck != ordersOriginalValue))  {
         if (lastBuyPrice != lastMyBuyPriceOriginal) {
             lastBuyPrice = trader.get("LastMyBuyPrice");
             trader.fileWrite(lastMyBuyPriceOriginalFile, lastBuyPrice);
