@@ -102,7 +102,8 @@ eventLogger("-----------------------------------------");
 ///////////////////////////////////////////////////////////////////////////////////////
 var lastTradeStatus = "";
 var lastTradeStatusFile = variablePath + "lastTradeStatusFile.txt";
-
+var currencyPrimaryBalanceOld = trader.get("Balance", currencyPrimary);
+var currencyPrimaryBalance = currencyPrimaryBalanceOld;
 lastTradeStatus = trader.fileReadAll(lastTradeStatusFile).toString().trim();
 eventLogger("lastTradeStatus: " + lastTradeStatus);
 if (lastTradeStatus == "SELL") {
@@ -411,9 +412,11 @@ function openAsksCountCheckFun() {
     lastSellPrice = trader.get("LastMySellPrice");
     eventLogger(scriptName + ".lastSellPrice: " + lastSellPrice);
     eventLogger(scriptName + ".lastSellPriceOld: " + lastSellPriceOld);
+    currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
+    eventLogger(scriptName + ".currencyPrimaryBalance: " + currencyPrimaryBalance);
+    eventLogger(scriptName + ".currencyPrimaryBalanceOld: " + currencyPrimaryBalanceOld);
 
-
-    if (openAsksCountCheck < openAsksCountCheckOld || openAsksCountCheck > openAsksCountCheckOld || lastSellPrice != lastSellPriceOld) {
+    if (openAsksCountCheck < openAsksCountCheckOld || openAsksCountCheck > openAsksCountCheckOld || lastSellPrice != lastSellPriceOld || currencyPrimaryBalance != currencyPrimaryBalanceOld) {
         lastBuyPrice = trader.get("LastMyBuyPrice");
         eventLogger(scriptName + ".lastBuyPrice: " + lastBuyPrice);
         eventLogger(scriptName + ".lastBuyPriceOld: " + lastBuyPriceOld);
@@ -430,6 +433,8 @@ function openAsksCountCheckFun() {
 
     lastSellPriceOld = lastSellPrice;
     openAsksCountCheckOld = openAsksCountCheck;
+    currencyPrimaryBalanceOld = currencyPrimaryBalance;
+
     eventLogger(scriptName + ".END");
 }
 
@@ -500,7 +505,7 @@ function changeNrOfOrders() {
 
     var primaryCurrencyValue = 0;
     primaryCurrencyValueOld = trader.fileReadAll(lastCurrencyPrimaryBallanceFile);
-    var currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
+    currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
     primaryCurrencyValue = currencyPrimaryBalance;
     eventLogger(scriptName + ".primaryCurrencyValue: " + primaryCurrencyValue);
     eventLogger(scriptName + ".primaryCurrencyValueOld: " + primaryCurrencyValueOld);
@@ -711,7 +716,7 @@ function script1() {
     pvtorvraz = 0;
     trader.delay(20, "aaa()");
     trader.timer(80, "restartEverything()");
-    var currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
+    currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
     eventLogger(scriptName + ".currencyPrimaryBalance: " + currencyPrimaryBalance);
 
     justStarted = false;
@@ -912,7 +917,7 @@ function makeBids() {
 
     if (asksRunning == false) {
         bidsRunning = true;
-        var currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
+        currencyPrimaryBalance = trader.get("Balance", currencyPrimary);
         var currencySecondaryBalance = trader.get("Balance", currencySecondary);
 
         eventLogger(scriptName + ".currencyPrimaryKeepAmountFixedValue: " + currencyPrimaryKeepAmountFixedValue);
