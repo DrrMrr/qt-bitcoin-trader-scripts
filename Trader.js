@@ -413,7 +413,7 @@ function openAsksCountCheckFun() {
     eventLogger(scriptName + ".lastSellPriceOld: " + lastSellPriceOld);
 
 
-    if (openAsksCountCheck < openAsksCountCheckOld || lastSellPrice != lastSellPriceOld) {
+    if (openAsksCountCheck < openAsksCountCheckOld || openAsksCountCheck > openAsksCountCheckOld || lastSellPrice != lastSellPriceOld) {
         lastBuyPrice = trader.get("LastMyBuyPrice");
         eventLogger(scriptName + ".lastBuyPrice: " + lastBuyPrice);
         eventLogger(scriptName + ".lastBuyPriceOld: " + lastBuyPriceOld);
