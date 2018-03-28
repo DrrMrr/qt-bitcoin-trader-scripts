@@ -65,12 +65,12 @@ function restartEverything() {
 	if(openAsksCount < openAsksCountOld)
 	{		
 			eventLogger(scriptName + ".STEP0");
-			restartTraderMainRestart();
+			//restartTraderMainRestart();
 	}
 	
     if (lastMySellPrice != lastMySellPriceOld) {
         eventLogger(scriptName + ".STEP1");        
-        restartTraderMainRestart();
+        //restartTraderMainRestart();
 											  
 											   
     } else {
@@ -81,7 +81,6 @@ function restartEverything() {
 
         currencySecondaryBalance = trader.get("Balance", currencySecondary);
         eventLogger(scriptName + ".currencySecondaryBalance: " + currencySecondaryBalance);
-        //trader.fileWrite(lastCurrencySecondaryBallanceFile, currencySecondaryBalance);
 
         openBidsCount = trader.get("OpenBidsCount");
         openAsksCount = trader.get("OpenAsksCount");
@@ -98,7 +97,7 @@ function restartEverything() {
             trader.fileWrite(lastSaleFile, lastMySellPriceOld);            
 																   
             trader.cancelBids(currencySecondary + currencyPrimary);
-            restartTraderMainRestart();
+            //restartTraderMainRestart();
 												   
         }
 										 

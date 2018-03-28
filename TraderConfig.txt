@@ -1,14 +1,19 @@
+#####  TODO #####;
+#####  MAKE NEW STRING VARIABLE FOR PAIRS THAT ARE SEPARATED WITH CHARACTER LIKE "/" - WEX#####;
+#####  TODO #####;
 #####  GENERAL SETTINGS - START #####;
 # currencyPrimary;
 currencyPrimary=BTC;
 # currencySecondary;
 currencySecondary=IOT;
+# currencyPairSplitCharacter - some exchanges require additional sign (WEX HAS PAIRS BTC/IOT AND NOT BTCIOT);
+currencyPairSplitCharacter=;
 # maximum number of bids;
 maxNumberOfBids=2;
 # should steps between bids be calculated in percentage;
 bidsDifferenceInPercentageCondition=true;
 # step between bids in percentage - 0.1 is 0.1% - in%,the first step indentation How price first buy order in the table should be less than the purchase of the current at the time of the calculation table.  All other orders will buy more cheaper;  
-bidsDifferenceInPercentage=1;
+bidsDifferenceInPercentage=0.60;
 # variable, that checks if all variables have been read;
 variableReadSuccessful=true;
 # firstBuyStep;
@@ -31,7 +36,7 @@ feeTaker=0.002;
 # martin;
 martin=5;
 # minBidAmount		- set minimum bid amount for exchange;
-minBidAmount=6;
+minBidAmount=6.10;
 #####  GENERAL SETTINGS - END #####;
 
 #####  PROFIT SETTINGS - START #####;
@@ -42,13 +47,11 @@ profitCurrencyPrimaryAmount=0.25;
 # profitCurrencyPrimaryAmountCondition;
 profitCurrencyPrimaryAmountCondition=false;
 # profitInPercentage;
-profitInPercentage=0.3;
+profitInPercentage=0.5;
 #####  PROFIT SETTINGS - END #####;
 
 
 #####  OPTIONAL #####;
-
-
 #####  RESET BIDS - START #####;
 # IF PRICE IS HIGHER THAN LAST BUY PRICE * resetPrice * 100 - START #####;
 # resetPrice 		- when should bids be reset;
@@ -63,11 +66,11 @@ resetBidsEnabled=false;
 # allBidsPriceEnabled;
 allBidsPriceEnabled=true;
 # allBidsPrice;
-allBidsPrice=6.15;
+allBidsPrice=6.20;
 # firstBidPriceEnabled;
 firstBidPriceEnabled=false;
 # firstBidPrice;
-firstBidPrice=6.15;
+firstBidPrice=6.20;
 #####  BIDS - FIXED AMOUNT - END #####;
 
 
@@ -76,9 +79,9 @@ firstBidPrice=6.15;
 # bidsDistributionEnabled;
 bidsDistributionEnabled=false;
 # bidsDistributionMaxNumberOfBids;
-bidsDistributionMaxNumberOfBids=93;
+bidsDistributionMaxNumberOfBids=31;
 # bidsDistributionMaxVolumeSecondCurrency;
 bidsDistributionMaxVolumeSecondCurrency=3;
 # bidsDistributionMinExchangeBid;
-bidsDistributionMinExchangeBid=0.01;
+bidsDistributionMinExchangeBid=6.10;
 #####  BIDS - DISTRIBUTED - END #####;
