@@ -13,6 +13,7 @@ Read page "How to setup" and "How it works" for further instructions. Currently,
 All comments and ideas are welcome and all new functionalities will be committed here.
 
 Contributions are also welcome on my BTC address 1PR1PH2dqx5gBH5dzY5wXV4h62so11Q4MK or you can donate it to author of QT Bitcoin Trader 1d6iMwjjNo8ZGYeJBZKXgcgVk9o7fXcjc
+Binance referral link: https://www.binance.com/?ref=10757282
 
 Best regards
 
