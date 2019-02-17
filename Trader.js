@@ -1763,7 +1763,7 @@ trader.on("LastMySellPrice").changed() {
 
 function readTraderVariables() {
     var scriptName = "readTraderVariables()";
-    var logFile = variablePath + "TraderConfig.txt";
+    var logFile = variablePath + "TraderConfig.cfg";
     var fileString = trader.fileReadAll(logFile);
     //eventLogger(scriptName + ".fileString: " + fileString);
     var arrayOfConfigLines = fileString.split(";");
